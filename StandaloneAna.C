@@ -381,6 +381,18 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
           cout << endl;
         }
 
+        // Track dump -- matches fpga.cc
+          printf("Track Parameters: \n");
+          printf("irinv = %i \n", track.irinv_ );
+          printf("iphi0 = %i \n", track.iphi0_ );
+          printf("iz0   = %i \n", track.iz0_ );
+          printf("it    = %i \n", track.it_ );
+          printf("stubID=");
+          std::map<int, int> stubs = track.stubID_;
+          for(std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) printf(" %i -- %i ",sb->first,sb->second);
+          printf("\n");
+          printf("dup   = %i\n \n", track.duplicate_);
+		      printf("chisq   = %f\n \n", (*trk)->chisq());
 
         if(track.duplicate_) {
           nDupTrk_tot++;
