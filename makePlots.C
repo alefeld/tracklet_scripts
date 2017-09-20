@@ -19,10 +19,11 @@
 #include <fstream>
 #include <iomanip>
 
-void makeSingleHist(TString rootFileName="mu10Analysis.root", TString hname="h_iLTkt", TString outputname="", bool log=false) {
+void makeSingleHist(TString rootFileName="mu10Analysis.root", TString hname="h_iLTkt") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
+    rootFileName.ReplaceAll("Analysis.root","");
     TString outputdir = "Plots/";
     TDirectory *d = (TDirectory*)rootFile->GetDirectory("");
 
@@ -33,67 +34,6 @@ void makeSingleHist(TString rootFileName="mu10Analysis.root", TString hname="h_i
         h1->SetLineColor(kBlack);
         h1->SetLineWidth(3);
 
-    // Setup the pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histogram
-    THStack* hs = new THStack("hs",hname);
-        hs->SetTitle(hname);
-        hs->Add(h1,"s");
-        hs->Draw("nostack");
-
-    // Make stat box
-    p1->Update();
-    TPaveStats* st1 = (TPaveStats*)h1->FindObject("stats");
-        st1->SetX1NDC(0.8);
-        st1->SetX2NDC(0.99);
-        st1->SetY1NDC(0.8);
-        st1->SetY2NDC(1.0);
-        st1->SetTextColor(h1->GetLineColor());
-
-    if(log) {
-      p1->SetLogy(); //LOG option
-      hs->SetMinimum(0.001); //LOG option
-    }
-    p1->Update();
-
-    // Save and close
-    if(outputname=="") {
-      c->Print(outputdir+hname+".png","png");
-    } else {
-      c->Print(outputdir+outputname+".png","png");
-    }
-    c->Close();
-
-}
-
-void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString hname1="h_itrkCurv", TString hname2="h_itrkCurvWODup", TString outputname="", bool log=false, bool plotRatio=false) {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile1 = new TFile(rootFileName1);
-    TFile *rootFile2 = new TFile(rootFileName2);
-    rootFileName1.ReplaceAll("","");
-    rootFileName2.ReplaceAll("","");
-    TString outputdir = "Plots/";
-    TDirectory *d1;
-    TDirectory *d2;
-    d1 = (TDirectory*)rootFile1->GetDirectory("");
-    d2 = (TDirectory*)rootFile2->GetDirectory("");
-
-    TCanvas* c = new TCanvas("c_comb_"+hname1);
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d1->Get(hname1);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-
-    TH1F* h2 = (TH1F*)d2->Get(hname2);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-
     // Setup the superimposed histograms pad
     TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
         p1->SetGrid();
@@ -101,11 +41,10 @@ void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString ro
         p1->cd();
 
     // Draw histograms
-    THStack* hs = new THStack("hs",hname1+" & "+hname2);
-        hs->SetTitle(hname1+" & "+hname2);
-
+    THStack* hs = new THStack("hs",hname);
+        hs->SetTitle(hname);
+        hs->SetMinimum(0.001);
         hs->Add(h1,"s");
-        hs->Add(h2,"s");
         hs->Draw("nostack");
 
     // Make stat boxes
@@ -116,79 +55,13 @@ void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString ro
         st1->SetY1NDC(0.8);
         st1->SetY2NDC(1.0);
         st1->SetTextColor(h1->GetLineColor());
-    TPaveStats* st2 = (TPaveStats*)h2->FindObject("stats");
-        st2->SetX1NDC(0.8);
-        st2->SetX2NDC(0.99);
-        st2->SetY1NDC(0.6);
-        st2->SetY2NDC(0.8);
-        st2->SetTextColor(h2->GetLineColor());
 
-    //Log options
-    if(log) {
-      p1->SetLogy();
-      hs->SetMinimum(0.001);
-      hs->SetMinimum(1);
-    }
-
+    //p1->SetLogy();
     p1->Update();
 
-    if(plotRatio) {
-        // Make room for ratio plot
-        p1->SetPad(0,0.225,1,1.0);
-        p1->Modified();
-        p1->Update();
-
-        // Setup the ratio plot
-        c->cd();
-        TPad *p2 = new TPad("p2","p2",0,0.05,1,0.3);
-            p2->SetTopMargin(0);
-            p2->SetBottomMargin(0.25);
-            p2->SetGrid();
-            p2->Draw();
-            p2->cd();
-
-        // Plot ratio
-        TH1F *h3 = (TH1F*)h1->Clone("h3");
-            h3->Reset("ICE");
-            h3->Divide(h1,h2);
-            h3->Draw();
-
-            // Plot settings
-            h3->SetTitle("");
-            h3->SetStats(0);
-            h3->SetLineColor(kBlue);
-            h3->SetMarkerStyle(6);
-            h3->SetMarkerColor(kBlue);
-            h3->SetMarkerSize(1.0);  
-
-            // X-axis parameters
-            h3->SetLabelSize(0.12,"X");
-            h3->SetLabelOffset(0.04,"X");
-            h3->SetTitleOffset(1.0,"X");
-            h3->GetXaxis()->SetTitle(h1->GetXaxis()->GetTitle());
-            h3->GetXaxis()->SetTitleColor(kBlack);
-            h3->SetTitleFont(62,"X");
-            h3->SetTitleSize(0.12,"X");
-            // Y-axis parameters
-            h3->GetYaxis()->SetNdivisions(50000+404);
-            h3->SetMinimum(0);
-            h3->GetYaxis()->SetLabelSize(0.1);
-            h3->GetYaxis()->SetTitle("Ratio");
-            h3->GetYaxis()->SetTitleSize(0.15);
-            h3->GetYaxis()->SetTitleOffset(.15);
-	  
-        p2->Modified();
-        p2->Update();        
-        
-    }
-
     // Save and close
-    if(outputname=="") {
-        c->Print(outputdir+"comb_"+hname1+"_"+".png","png");
-    } else {
-        c->Print(outputdir+outputname+".png","png");
-    }
-//    c->Close();
+    c->Print(outputdir+hname+".png","png");
+    c->Close();
 
 }
 
@@ -295,6 +168,127 @@ void make2DHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname="
     }
 
     c->Close();
+
+}
+
+void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString hname1="h_itrkCurv", TString hname2="h_itrkCurvWODup", TString region="barrelOnly", TString outputname="0", bool plotRatio=true) {
+
+    // Load File and prep for loading hists/saving
+    TFile *rootFile1 = new TFile(rootFileName1);
+    TFile *rootFile2 = new TFile(rootFileName2);
+    rootFileName1.ReplaceAll("FPGAAnalysis.root","");
+    rootFileName2.ReplaceAll("FPGAAnalysis.root","");
+    TString outputdir = "Plots/" + rootFileName1 + "/";
+    TDirectory *d1;
+    TDirectory *d2;
+    if(region=="total") {
+        d1 = (TDirectory*)rootFile1->GetDirectory("");
+        d2 = (TDirectory*)rootFile2->GetDirectory("");
+    } else {
+        d1 = (TDirectory*)rootFile1->GetDirectory(region);
+        d2 = (TDirectory*)rootFile2->GetDirectory(region);
+    }
+
+    TCanvas* c = new TCanvas("c_comb_"+hname1);
+
+    // Get histograms
+    TH1F* h1 = (TH1F*)d1->Get(hname1);
+        h1->SetLineColor(kBlack);
+        h1->SetLineWidth(3);
+
+    TH1F* h2 = (TH1F*)d2->Get(hname2);
+        h2->SetLineColor(kRed);
+        h2->SetLineWidth(3);
+
+    // Setup the superimposed histograms pad
+    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
+        p1->SetGrid();
+        p1->Draw();
+        p1->cd();
+
+    // Draw histograms
+    THStack* hs = new THStack("hs",hname1+" & "+hname2);
+        hs->SetTitle(hname1+" & "+hname2);
+        hs->SetMinimum(0.001);
+        hs->Add(h1,"s");
+        hs->Add(h2,"s");
+        hs->Draw("nostack");
+
+    // Make stat boxes
+    p1->Update();
+    TPaveStats* st1 = (TPaveStats*)h1->FindObject("stats");
+        st1->SetX1NDC(0.8);
+        st1->SetX2NDC(0.99);
+        st1->SetY1NDC(0.8);
+        st1->SetY2NDC(1.0);
+        st1->SetTextColor(h1->GetLineColor());
+    TPaveStats* st2 = (TPaveStats*)h2->FindObject("stats");
+        st2->SetX1NDC(0.8);
+        st2->SetX2NDC(0.99);
+        st2->SetY1NDC(0.6);
+        st2->SetY2NDC(0.8);
+        st2->SetTextColor(h2->GetLineColor());
+
+    p1->SetLogy();
+    p1->Update();
+
+    if(plotRatio) {
+        // Make room for ratio plot
+        p1->SetPad(0,0.225,1,1.0);
+        p1->Modified();
+        p1->Update();
+
+        // Setup the ratio plot
+        c->cd();
+        TPad *p2 = new TPad("p2","p2",0,0.05,1,0.3);
+            p2->SetTopMargin(0);
+            p2->SetBottomMargin(0.25);
+            p2->SetGrid();
+            p2->Draw();
+            p2->cd();
+
+        // Plot ratio
+        TH1F *h3 = (TH1F*)h1->Clone("h3");
+            h3->Reset("ICE");
+            h3->Divide(h1,h2);
+            h3->Draw();
+
+            // Plot settings
+            h3->SetTitle("");
+            h3->SetStats(0);
+            h3->SetLineColor(kBlue);
+            h3->SetMarkerStyle(6);
+            h3->SetMarkerColor(kBlue);
+            h3->SetMarkerSize(1.0);  
+
+            // X-axis parameters
+            h3->SetLabelSize(0.12,"X");
+            h3->SetLabelOffset(0.04,"X");
+            h3->SetTitleOffset(1.0,"X");
+            h3->GetXaxis()->SetTitle(h1->GetXaxis()->GetTitle());
+            h3->GetXaxis()->SetTitleColor(kBlack);
+            h3->SetTitleFont(62,"X");
+            h3->SetTitleSize(0.12,"X");
+            // Y-axis parameters
+            h3->GetYaxis()->SetNdivisions(50000+404);
+            h3->SetMinimum(0);
+            h3->GetYaxis()->SetLabelSize(0.1);
+            h3->GetYaxis()->SetTitle("Ratio");
+            h3->GetYaxis()->SetTitleSize(0.15);
+            h3->GetYaxis()->SetTitleOffset(.15);
+	  
+        p2->Modified();
+        p2->Update();        
+        
+    }
+
+    // Save and close
+    if(outputname=="0") {
+        c->Print(outputdir+"comb_"+hname1+"_"+region+".png","png");
+    } else {
+        c->Print(outputdir+outputname+".png","png");
+    }
+//    c->Close();
 
 }
 
@@ -691,16 +685,54 @@ void makeDiskTrackHist(TString rootFileName="mu10Analysis.root", TString half="F
 
 }
 
+void TwoGauss(TH1F* hist) {
+  
+     TAxis *xa = hist->GetXaxis();
+     TF1 *myF = new TF1("myF","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))+[3]*exp(-(x-[4])*(x-[4])/(2*[5]*[5]))",
+                        xa->GetXmin(),xa->GetXmax());   
 
-void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1name="h_matchDeltaPhi_AllM", TString outputname="") {
+     myF->SetParameter(0,0.75*hist->GetMaximum());
+     myF->SetParameter(1,hist->GetMean());
+     myF->SetParameter(2,0.5*hist->GetRMS());
+     myF->SetParameter(3,0.25*hist->GetMaximum());
+     myF->SetParameter(4,hist->GetMean());
+     myF->SetParameter(5,1.5*hist->GetRMS());
+     hist->Fit("myF","R");
+// Offsets assuming First gaussian is narrower.
+     Int_t off1 = 0;
+     Int_t off2 = 3;
+// If second Gauss is narrower...flip offsets     
+     if(fabs(myF->GetParameter(2)) > fabs(myF->GetParameter(5)) ) {
+       off1 = 3;
+       off2 = 0;
+     }
+     Float_t sig1 = fabs(myF->GetParameter(2+off1));
+     Float_t sig2 = fabs(myF->GetParameter(2+off2));
+     Float_t norm1 = myF->GetParameter(0+off1);
+     Float_t norm2 = myF->GetParameter(0+off2);
+     
+     Float_t sig3a = (norm1*sig1*sig1+norm2*sig2*sig2)/(norm1*sig1+norm2*sig2);
+     Float_t sig3b = (norm1*sig1+norm2*sig2)/(norm1+norm2);
+     Double_t sig3c = 0.9*sig1;
+     Double_t intVal = 0.0;
+     while(intVal<0.68 && myF->IsInside(&sig3c) ) {
+        sig3c = sig3c+sig1/100.;
+        Double_t mean = myF->GetParameter(1+off1);
+        intVal = myF->Integral(mean-sig3c,mean+sig3c);
+        intVal = intVal/( sqrt(2.0*3.14159)*(norm1*sig1+norm2*sig2) );
+     }
+     printf("Weighted Sigmas: with Peak %f with Area %f  68 Percent %f \n",sig3a,sig3b,sig3c);
+}
+
+void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1name="h_matchDeltaPhi_AllM", TString outputname="",double xran=1) {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
-    TString outputdir = "Plots/Resolution/";
+    TString outputdir = "Plots/Resolution/tmp/";
     TDirectory *d;
     d = (TDirectory*)rootFile->GetDirectory("");
 
-	TCanvas* c = new TCanvas(h1name);
+	  TCanvas* c = new TCanvas(h1name);
         c->SetGrid();
 
     // Get histogram and draw the fit curve on top
@@ -708,10 +740,34 @@ void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1n
         h1->SetLineColor(kBlack);
         h1->SetLineWidth(3);
         h1->Draw();
-        h1->Fit("gaus","Q");
+    gPad->Update();
+        h1->Fit("gaus","Q","",-xran,xran);
+
+//    TwoGauss(h1);
+
 
     TF1* g1 = h1->GetFunction("gaus");
+//    TF1* g1 = h1->GetFunction("myF");
         g1->SetLineColor(kRed);
+    TPaveStats *st = (TPaveStats*)h1->FindObject("stats");
+        st->SetOptStat(0001101111);
+    TList *listOfLines = st->GetListOfLines();
+        listOfLines->Remove(st->GetLineWith("Std"));
+    st->SetName("Mystats");
+    h1->SetStats(0);
+//        st->SetOptStat(000000000);
+//	      st->SetOptFit(0001);
+//    st->AddEntry(myF,"sigma="+myF->GetParameter(sig3c),"");
+
+    st->AddText(Form("Sigma = %f",g1->GetParameter(2)));
+    st->AddText(Form("Underflow = %.0f",h1->GetBinContent(0)));
+    st->AddText(Form("Overflow = %.0f",h1->GetBinContent(h1->GetNbinsX()+1)));
+        st->SetOptStat(0001101111);
+//        TLatex *tl = new TLatex(0,0,Form("sigma = ",g1->GetParameter(2)));
+//        listOfLines->Add(tl);
+
+    gPad->Modified();
+    gPad->Update();
 
     // Save and close
     if(outputname=="") {
@@ -1146,31 +1202,31 @@ void makeTDRPlot(TString rootFileName1="mu_40000_2to10_adj_analyze.root", TStrin
 
 void allPlots(TString rootFile="totalMuFPGAAnalysis.root") {
 
-//    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "barrelOnly", "stubShare_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "diskOnly", "stubShare_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "overlap", "stubShare_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "barrelOnly", "stubShare_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "diskOnly", "stubShare_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "overlap", "stubShare_overlap", true);
 //    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "barrelOnly", "nTrkSec_barrel", false);
 //    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "diskOnly", "nTrkSec_disk", false);
 //    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "overlap", "nTrkSec_overlap", false);
-//    makeDoubleHist(rootFile, rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "total", "nTrkSec_total", false);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "barrelOnly", "iCurv_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "diskOnly", "iCurv_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "overlap", "iCurv_overlap", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "barrelOnly", "Pt_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "diskOnly", "Pt_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "overlap", "Pt_overlap", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "barrelOnly", "iPhi_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "diskOnly", "iPhi_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "overlap", "iPhi_overlap", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "barrelOnly", "TanTh_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "diskOnly", "TanTh_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "overlap", "TanTh_overlap", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "barrelOnly", "Eta_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "diskOnly", "Eta_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "overlap", "Eta_overlap", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "barrelOnly", "Phi_barrel", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "diskOnly", "Phi_disk", true);
-//    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "overlap", "Phi_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "total", "nTrkSec_total", false);
+    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "barrelOnly", "iCurv_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "diskOnly", "iCurv_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "overlap", "iCurv_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "barrelOnly", "Pt_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "diskOnly", "Pt_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "overlap", "Pt_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "barrelOnly", "iPhi_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "diskOnly", "iPhi_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "overlap", "iPhi_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "barrelOnly", "TanTh_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "diskOnly", "TanTh_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "overlap", "TanTh_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "barrelOnly", "Eta_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "diskOnly", "Eta_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "overlap", "Eta_overlap", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "barrelOnly", "Phi_barrel", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "diskOnly", "Phi_disk", true);
+    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "overlap", "Phi_overlap", true);
 
     makeTripleHist(rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "h_nMCTrkSec_tot", "total", "nTrkSecComb_tot");
     makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEtaLess1", "nTrkSecComb_etaLess1");
@@ -1207,77 +1263,46 @@ void makeTriplePlots() {
 
 }
 
-void makeChisqPlots(TString rootFile1="mu_standalone_Ana.root",TString rootFile2="mu_CMSSW_Ana.root") {
+void makeResPlots(TString rootFile="mu10_Canalyze.root") {
 
-  makeSingleHist(rootFile1, "h_chisq_afterPD", "h_chisq_standalone", false);
-  makeSingleHist(rootFile2, "h_chisq", "h_chisq_CMSSW", false);
-  makeDoubleHist(rootFile1, rootFile2, "h_chisq_afterPD", "h_chisq", "h_chisq_compare", false);
-  makeSingleHist(rootFile1, "h_chisq_afterPD", "h_chisq_standalone_log", true);
-  makeSingleHist(rootFile2, "h_chisq", "h_chisq_CMSSW_log", true);
-  makeDoubleHist(rootFile1, rootFile2, "h_chisq_afterPD", "h_chisq", "h_chisq_compare_log", true);
+  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_1to2", "", 0.0015);
+  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_2to3", "", 0.0015);
+  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_3to4", "", 0.0015);
+  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_4to10", "", 0.0015);
 
-}
+  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_1to2", "", 0.01);
+  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_2to3", "", 0.01);
+  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_3to4", "", 0.01);
+  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_4to10", "", 0.01);
 
-//void makeResPlots(TString rootFile="totalMuFPGAAnalysis.root") {
+  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_1to2", "", 1);
+  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_2to3", "", 1);
+  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_3to4", "", 1);
+  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_4to10", "", 1);
 
-//    resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","mcEtaLess1","DeltaPhi_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaEta_AllM","mcEtaLess1","DeltaEta_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaR_AllM","mcEtaLess1","DeltaR_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","mcEtaLess1","DeltaPtOPt_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","mcEta1to1.7","DeltaPhi_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaEta_AllM","mcEta1to1.7","DeltaEta_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaR_AllM","mcEta1to1.7","DeltaR_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","mcEta1to1.7","DeltaPtOPt_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","mcEtaMore1.7","DeltaPhi_allMatch_etaMore1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaEta_AllM","mcEtaMore1.7","DeltaEta_allMatch_etaMore1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaR_AllM","mcEtaMore1.7","DeltaR_allMatch_etaMore1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","mcEtaMore1.7","DeltaPtOPt_allMatch_etaMore1.7");
+  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_1to2", "", 0.03);
+  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_2to3", "", 0.03);
+  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_3to4", "", 0.03);
+  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_4to10", "", 0.03);
 
-  //resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","barrelOnly","DeltaPhi_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaEta_AllM","barrelOnly","DeltaEta_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaR_AllM","barrelOnly","DeltaR_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","barrelOnly","DeltaPtOPt_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","diskOnly","DeltaPhi_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaEta_AllM","diskOnly","DeltaEta_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaR_AllM","diskOnly","DeltaR_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","diskOnly","DeltaPtOPt_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","overlap","DeltaPhi_allMatch_overlap");
-  //resolutionPlots(rootFile,"h_matchDeltaEta_AllM","overlap","DeltaEta_allMatch_overlap");
-  //resolutionPlots(rootFile,"h_matchDeltaR_AllM","overlap","DeltaR_allMatch_overlap");
-  //resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","overlap","DeltaPtOPt_allMatch_overlap"); 
-  /*
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","mcEtaLess1","DeltaZ0_nS4_mcEtaLess1");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","mcEtaLess1","DeltaZ0_nS5_mcEtaLess1");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","mcEtaLess1","DeltaZ0_nS6_mcEtaLess1");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","mcEta1to1.7","DeltaZ0_nS4_mcEta1to1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","mcEta1to1.7","DeltaZ0_nS5_mcEta1to1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","mcEta1to1.7","DeltaZ0_nS6_mcEta1to1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","mcEtaMore1.7","DeltaZ0_nS4_mcEtaMore1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","mcEtaMore1.7","DeltaZ0_nS5_mcEtaMore1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","mcEtaMore1.7","DeltaZ0_nS6_mcEtaMore1.7");
-*/
-  /*
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","barrelOnly","DeltaZ0_nS4_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","barrelOnly","DeltaZ0_nS5_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","barrelOnly","DeltaZ0_nS6_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","diskOnly","DeltaZ0_nS4_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","diskOnly","DeltaZ0_nS5_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","diskOnly","DeltaZ0_nS6_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","overlap","DeltaZ0_nS4_overlap");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","overlap","DeltaZ0_nS5_overlap");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","overlap","DeltaZ0_nS6_overlap");
-  */
+  resolutionPlot(rootFile, "h_matchDeltaPhi_AllM_tot", "", 0.0015);
+  resolutionPlot(rootFile, "h_matchDeltaEta_AllM_tot", "", 0.01);
+  resolutionPlot(rootFile, "h_matchDeltaZ0_AllM_tot", "", 1);
+  resolutionPlot(rootFile, "h_matchDeltaPtOPt_AllM_tot", "", 0.03);
+
+
 //    combinationResolution(rootFile,"Phi","tracklet","PhiResVsNStub_trklet");
 //    combinationResolution(rootFile,"Eta","tracklet","EtaResVsNStub_trklet");
 //    combinationResolution(rootFile,"Z0","tracklet","Z0ResVsNStub_trklet");
 //    combinationResolution(rootFile,"PtOPt","tracklet","PtOPtResVsNStub_trklet");
-//  
-//    //combinationResolution(rootFile,"Phi","eta","PhiResVsNStub_eta");
-//    //combinationResolution(rootFile,"Eta","eta","EtaResVsNStub_eta");
-//    //combinationResolution(rootFile,"Z0","eta","Z0ResVsNStub_eta");
-//    //combinationResolution(rootFile,"PtOPt","eta","PtOPtResVsNStub_eta");
 
+}
 
+//void makeResPlots(TString rootFile="mu10_Canalyze.root") {
+
+//  resolutionPlot(rootFile, "h_matchDeltaPhi_AllM_tot", "");
+//  resolutionPlot(rootFile, "h_matchDeltaEta_AllM_tot", "");
+//  resolutionPlot(rootFile, "h_matchDeltaZ0_AllM_tot", "");
 
 //}
 

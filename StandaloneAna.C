@@ -69,12 +69,13 @@ void loadFPGATree(TString fileName = "myTest.root") {
 
 void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest.root") {
 
+  const bool prebin = false;
+  const bool adjSector = true;
   const bool stubsTxtFile = false;
   const double Maxpt = 200.0;
-  const double Minpt = 0.0;
+  const double Minpt = 2.0;
 
   const int minStubs = 4;
-  const int minIndStubs = 3;
 
   ofstream stubid ("StubIDMulti.txt");
 
@@ -91,7 +92,6 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   //Initialize histograms NOT separated by region
 
   TH1F* h_mcTrkPt_tot  = new TH1F("h_mcTrkPt_tot", "mc trk Pt",200,0.,200.);
-  TH1F* h_mcTrkPt_low_tot  = new TH1F("h_mcTrkPt_low_tot", "mc trk Pt",50,0.,10.);
   TH1F* h_mcTrkPhi_tot = new TH1F("h_mcTrkPhi_tot","mc trk Phi",200,-TMath::Pi(),TMath::Pi());
   TH1F* h_mcTrkZ0_tot  = new TH1F("h_mcTrkZ0_tot", "mc trk Z0",200,-50.,50.);
   TH1F* h_mcTrkVr_tot  = new TH1F("h_mcTrkVr_tot", "mc sq(vx^2+vy^2)",2000,0.,2.);
@@ -99,7 +99,6 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_mcType_tot   = new TH1F("h_mcType_tot",  "mc type",801,-400.5,400.5);
 
   TH1F* h_trkPtWODup_tot   = new TH1F("h_trkPtWODup_tot","trk pt",200,-25.,25.);
-  TH1F* h_trkPtWODup_low_tot   = new TH1F("h_trkPtWODup_low_tot","trk pt",50,0.,10.);
   TH1F* h_trkPhiWODup_tot  = new TH1F("h_trkPhiWODup_tot","trk (global) phi",100,0.,TMath::TwoPi());
   TH1F* h_trkEtaWODup_tot  = new TH1F("h_trkEtaWODup_tot","trk eta",100,-4.,4.);
   TH1F* h_trkZ0WODup_tot   = new TH1F("h_trkZ0WODup_tot","trk z0",200,-50.,50.);
@@ -123,8 +122,6 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_nTrkSec_eta3      = new TH1F("h_nTrkSec_eta3","Num Tracks per Sector",26,-0.5,25.5);
   TH1F* h_nTrkSec_eta4      = new TH1F("h_nTrkSec_eta4","Num Tracks per Sector",26,-0.5,25.5);
 
-  TH1F* h_chisq_afterPD     = new TH1F("h_chisq_afterPD","chisq of tracks",100,0,7);
-  TH1F* h_chisq_beforePD    = new TH1F("h_chisq_beforePD","chisq of tracks",100,0,7);
     
   //For Single Muons
   TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",15,0.5,15.5);
@@ -153,7 +150,6 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   */
 
   TH1F* h_nStub = new TH1F("h_nStub","nStub per Event",31,-0.5,30.5);
-  TH1F* h_nStubTrk     = new TH1F("h_nStubTrk","Num Stubs per Track",8,-0.5,8.5);
   TH1F* h_nStub_ghost = new TH1F("h_nStub_ghost","nStub per Event with ghosts",31,-0.5,30.5);
   TH1F* h_iLTkt_tot = new TH1F("h_iLTkt_tot","Track seed",45,-22.5,22.5);
   TH1F* h_iLTktWODup_tot = new TH1F("h_iLTktWODup_tot","Track seed W/O duplicates",45,-22.5,22.5);
@@ -162,38 +158,38 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_matchDeltaPhi_AllM_tot   = new TH1F("h_matchDeltaPhi_AllM_tot","fpga-mc delta phi (all)",100,-0.003,0.003);
   TH1F* h_matchDeltaEta_AllM_tot   = new TH1F("h_matchDeltaEta_AllM_tot","fpga-mc delta eta (all)",100,-0.025,0.025);
   TH1F* h_matchDeltaR_AllM_tot     = new TH1F("h_matchDeltaR_AllM_tot"  ,"fpga-mc delta R (all)"  ,100,0.,0.025);
-  TH1F* h_matchDeltaZ0_AllM_tot    = new TH1F("h_matchDeltaZ0_AllM_tot"  ,"fpga-mc delta Z0 (all)"  ,100,-10,10);
+  TH1F* h_matchDeltaZ0_AllM_tot    = new TH1F("h_matchDeltaZ0_AllM_tot"  ,"fpga-mc delta Z0 (all)"  ,100,-2.5,2.5);
   TH1F* h_matchDeltaPtOPt_AllM_tot = new TH1F("h_matchDeltaPtOPt_AllM_tot" ,"fpga-mc (delta Pt)/Pt (all)" ,100,-0.1,0.1);
 
   TH2F* h_matchDeltaPhi_chi2_AllM   = new TH2F("h_matchDeltaPhi_chi2_AllM","fpga-mc delta phi v. chi2",40,-0.003,0.003,40,0,20);
   TH2F* h_matchDeltaEta_chi2_AllM   = new TH2F("h_matchDeltaEta_chi2_AllM","fpga-mc delta eta v. chi2",40,-0.025,0.025,40,0,20);
   TH2F* h_matchDeltaR_chi2_AllM     = new TH2F("h_matchDeltaR_chi2_AllM"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025,40,0,20);
-  TH2F* h_matchDeltaZ0_chi2_AllM    = new TH2F("h_matchDeltaZ0_chi2_AllM"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10,40,0,20);
+  TH2F* h_matchDeltaZ0_chi2_AllM    = new TH2F("h_matchDeltaZ0_chi2_AllM"  ,"fpga-mc delta Z0 v. chi2"  ,40,-2.5,2.5,40,0,20);
   TH2F* h_matchDeltaPtOPt_chi2_AllM = new TH2F("h_matchDeltaPtOPt_chi2_AllM" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1,40,0,20);
+
+  TH1F* h_matchDeltaPhi_chi2_1to2   = new TH1F("h_matchDeltaPhi_chi2_1to2","fpga-mc delta phi v. chi2",40,-0.003,0.003);
+  TH1F* h_matchDeltaEta_chi2_1to2   = new TH1F("h_matchDeltaEta_chi2_1to2","fpga-mc delta eta v. chi2",40,-0.025,0.025);
+  TH1F* h_matchDeltaR_chi2_1to2     = new TH1F("h_matchDeltaR_chi2_1to2"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
+  TH1F* h_matchDeltaZ0_chi2_1to2    = new TH1F("h_matchDeltaZ0_chi2_1to2"  ,"fpga-mc delta Z0 v. chi2"  ,40,-2.5,2.5);
+  TH1F* h_matchDeltaPtOPt_chi2_1to2 = new TH1F("h_matchDeltaPtOPt_chi2_1to2" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
 
   TH1F* h_matchDeltaPhi_chi2_2to3   = new TH1F("h_matchDeltaPhi_chi2_2to3","fpga-mc delta phi v. chi2",40,-0.003,0.003);
   TH1F* h_matchDeltaEta_chi2_2to3   = new TH1F("h_matchDeltaEta_chi2_2to3","fpga-mc delta eta v. chi2",40,-0.025,0.025);
   TH1F* h_matchDeltaR_chi2_2to3     = new TH1F("h_matchDeltaR_chi2_2to3"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_2to3    = new TH1F("h_matchDeltaZ0_chi2_2to3"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
+  TH1F* h_matchDeltaZ0_chi2_2to3    = new TH1F("h_matchDeltaZ0_chi2_2to3"  ,"fpga-mc delta Z0 v. chi2"  ,40,-2.5,2.5);
   TH1F* h_matchDeltaPtOPt_chi2_2to3 = new TH1F("h_matchDeltaPtOPt_chi2_2to3" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
 
   TH1F* h_matchDeltaPhi_chi2_3to4   = new TH1F("h_matchDeltaPhi_chi2_3to4","fpga-mc delta phi v. chi2",40,-0.003,0.003);
   TH1F* h_matchDeltaEta_chi2_3to4   = new TH1F("h_matchDeltaEta_chi2_3to4","fpga-mc delta eta v. chi2",40,-0.025,0.025);
   TH1F* h_matchDeltaR_chi2_3to4     = new TH1F("h_matchDeltaR_chi2_3to4"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_3to4    = new TH1F("h_matchDeltaZ0_chi2_3to4"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
+  TH1F* h_matchDeltaZ0_chi2_3to4    = new TH1F("h_matchDeltaZ0_chi2_3to4"  ,"fpga-mc delta Z0 v. chi2"  ,40,-2.5,2.5);
   TH1F* h_matchDeltaPtOPt_chi2_3to4 = new TH1F("h_matchDeltaPtOPt_chi2_3to4" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
 
-  TH1F* h_matchDeltaPhi_chi2_4to5   = new TH1F("h_matchDeltaPhi_chi2_4to5","fpga-mc delta phi v. chi2",40,-0.003,0.003);
-  TH1F* h_matchDeltaEta_chi2_4to5   = new TH1F("h_matchDeltaEta_chi2_4to5","fpga-mc delta eta v. chi2",40,-0.025,0.025);
-  TH1F* h_matchDeltaR_chi2_4to5     = new TH1F("h_matchDeltaR_chi2_4to5"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_4to5    = new TH1F("h_matchDeltaZ0_chi2_4to5"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
-  TH1F* h_matchDeltaPtOPt_chi2_4to5 = new TH1F("h_matchDeltaPtOPt_chi2_4to5" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
-
-  TH1F* h_matchDeltaPhi_chi2_8to12   = new TH1F("h_matchDeltaPhi_chi2_8to12","fpga-mc delta phi v. chi2",40,-0.003,0.003);
-  TH1F* h_matchDeltaEta_chi2_8to12   = new TH1F("h_matchDeltaEta_chi2_8to12","fpga-mc delta eta v. chi2",40,-0.025,0.025);
-  TH1F* h_matchDeltaR_chi2_8to12     = new TH1F("h_matchDeltaR_chi2_8to12"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_8to12    = new TH1F("h_matchDeltaZ0_chi2_8to12"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
-  TH1F* h_matchDeltaPtOPt_chi2_8to12 = new TH1F("h_matchDeltaPtOPt_chi2_8to12" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
+  TH1F* h_matchDeltaPhi_chi2_4to10   = new TH1F("h_matchDeltaPhi_chi2_4to10","fpga-mc delta phi v. chi2",40,-0.003,0.003);
+  TH1F* h_matchDeltaEta_chi2_4to10   = new TH1F("h_matchDeltaEta_chi2_4to10","fpga-mc delta eta v. chi2",40,-0.025,0.025);
+  TH1F* h_matchDeltaR_chi2_4to10     = new TH1F("h_matchDeltaR_chi2_4to10"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
+  TH1F* h_matchDeltaZ0_chi2_4to10    = new TH1F("h_matchDeltaZ0_chi2_4to10"  ,"fpga-mc delta Z0 v. chi2"  ,40,-2.5,2.5);
+  TH1F* h_matchDeltaPtOPt_chi2_4to10 = new TH1F("h_matchDeltaPtOPt_chi2_4to10" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
 
   TH2F* h_nTrkVsmcTrkPt_tot      = new TH2F("h_nTrkVsmcTrkPt_tot", "nTrk vs mc trk Pt",600,0.,150.,10,-0.5,9.5);
   TH2F* h_nTrkWODupVsmcTrkPt_tot = new TH2F("h_nTrkWODupVsmcTrkPt_tot", "NTrk vs mc trk Pt (after)",600,0.,150.,10,-0.5,9.5);
@@ -303,7 +299,8 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 
   // Loop over events
   for(int i=0; i<numEvts; i++) {
-//    cout << "Analyzing event  " << i << "..." << endl;
+  //for(int i=0; i<21; i++) {
+
     fpgaTree->GetEntry(i);
 
     // Initialize map to count stubs
@@ -342,7 +339,114 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
     h_B4Multi->Fill(nStubEvt[-10-4]);
     h_B5Multi->Fill(nStubEvt[-10-5]);
     
-    //Loop through events
+    // Duplicate Removal Section
+    // Map of track ID (number) to duplicates
+    std::map<int,bool> duplicateMap;
+    for(int j=0; j<(int)fpgaEvent->tracks.size(); j++) duplicateMap.insert(std::pair<int,bool>(j,false) );
+    
+    int nShare[1000][1000]={{0}};
+    int nStub[1000]={0};
+
+    // Loop over tracks in this event to count stubs
+    for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++) {
+
+      // Get this track, count stubs
+      FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
+      nStub[ntrk] = track.stubID_.size();
+      /*
+      cout << track.nLayerMatch_ << "+" << track.nDiskMatch_;
+      cout << ", " << track.iLTkt_ << ", " <<track.stubID_.size() << endl;
+      for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
+        cout << st->first << "," << st->second << " ";
+      }
+      cout << endl;
+      */
+    }
+    /*
+    cout << "Event: " << i << endl;
+      */
+
+    // Loop over tracks in this event
+    for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++) {
+
+      // Get this track
+      FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
+
+      // Pass nStub cut, pt cut, duplicate cut
+      if(nStub[ntrk]>=minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !duplicateMap.at(ntrk)) {
+
+        //Loop over other tracks
+        for(int ntrk2=ntrk+1; ntrk2<(int)fpgaEvent->tracks.size(); ntrk2++) {
+          FPGAEventTrack track2 = fpgaEvent->tracks.at(ntrk2);
+
+          // Pass nStub cut, pt cut, duplicate cut
+          if(nStub[ntrk2]>=minStubs && abs(track2.pt_)>Minpt && abs(track2.pt_)<Maxpt && !duplicateMap.at(ntrk2) ) {
+
+            //Determine how many stubs these two tracks share
+            for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
+              if(track2.stubID_.find(st->first) != track2.stubID_.end()) {
+                if(st->second == track2.stubID_[st->first] && st->second != 63) {
+                  nShare[ntrk][ntrk2]++;
+                  nShare[ntrk2][ntrk]++;
+                }
+              }
+            }
+            //cout << "nStub[" << ntrk2 << "] = " << nStub[ntrk2] << ", nShare[" << ntrk2 << "] = " << nShare[ntrk2] << endl;
+          }
+        } //end loop of secondary tracks
+
+        // We've counted stubs and nshare, so remove duplicates in the same sector
+        for(int ntrk2=ntrk+1; ntrk2<(int)fpgaEvent->tracks.size(); ntrk2++) {
+          FPGAEventTrack track2 = fpgaEvent->tracks.at(ntrk2);
+          if(nStub[ntrk2]>=minStubs && abs(track2.pt_)>Minpt && abs(track2.pt_)<Maxpt && (track2.nSector_ == track.nSector_) && !duplicateMap.at(ntrk2) ) {
+            //Decide whether we want to flag track as duplicate
+
+            //chi2 method
+            if((nStub[ntrk]-nShare[ntrk][ntrk2])<3 || (nStub[ntrk2]-nShare[ntrk][ntrk2])<3) {
+              if(track.chiS_ > track2.chiS_) duplicateMap.at(ntrk)=true;
+              if(track.chiS_ <= track2.chiS_) duplicateMap.at(ntrk2)=true;
+            }
+
+            //nstub method
+            //Remove the track with the least number of stubs, then by seeding layer
+//            if((nStub[ntrk]-nShare[ntrk][ntrk2])<3 && nStub[ntrk2]>nStub[ntrk]){
+//              duplicateMap.at(ntrk)=true;
+//            }
+//            if((nStub[ntrk2]-nShare[ntrk][ntrk2])<3 && nStub[ntrk]>=nStub[ntrk2]){
+//              duplicateMap.at(ntrk2)=true;
+//            }
+
+          }//end track2 selection
+        }//end loop over secondary tracks
+      }//end track1 selection
+    }//end loop over primary tracks
+    
+    // Adjacent sector removal
+    if(adjSector) {
+      for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++) {
+        // Get this track, pass nStub cut, pt cut, duplicate cut
+        FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
+        if(nStub[ntrk]>=minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !duplicateMap.at(ntrk)) {
+          //Loop over other tracks to look for duplicates
+          for(int ntrk2=0; ntrk2<(int)fpgaEvent->tracks.size(); ntrk2++) {
+            // Pass nStub cut, pt cut, duplicate cut
+            // Select adjacent-sector tracks for removal (N+1 sector only)
+            FPGAEventTrack track2 = fpgaEvent->tracks.at(ntrk2);
+            if(nStub[ntrk2]>=minStubs && abs(track2.pt_)>Minpt && abs(track2.pt_)<Maxpt && !duplicateMap.at(ntrk2)) {
+              if((track2.nSector_ == track.nSector_+1) || ((track.nSector_==27) && (track2.nSector_==0))) {
+//              if(abs(track2.nSector_-track.nSector_)==1 || abs(track2.nSector_-track.nSector_)==27) {
+                // Only try to flag secondary track as duplicate
+                if((nStub[ntrk2]-nShare[ntrk][ntrk2])<3 || (nStub[ntrk]-nShare[ntrk][ntrk2])<3) duplicateMap.at(ntrk2)=true;
+//                if((nStub[ntrk2]-nShare[ntrk][ntrk2])<3 && nStub[ntrk] >= nStub[ntrk2]) duplicateMap.at(ntrk2)=true;
+//                if((nStub[ntrk]-nShare[ntrk][ntrk2])<3 && nStub[ntrk] < nStub[ntrk2]) duplicateMap.at(ntrk)=true;
+              }// end track2 sector selection
+            }// end track2 selection
+          }//end loop over secondary tracks
+        }//end track1 selection
+      }//end loop over primary tracks
+    }//end adjacent sector removal
+    
+    //Loop through tracks again to find out how many were flagged as duplicates
     int nDupTrk_tot=0;
 
     int nTrkSec_tot[28]={0};
@@ -357,59 +461,31 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 
     for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++){
       FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
-      if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt) {
+      if(nStub[ntrk] >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt) {
 
-        nILTkt[track.seed_]++;
-        h_iLTkt_tot->Fill(track.seed_);
+        nILTkt[track.iLTkt_]++;
 
-        h_chisq_beforePD->Fill(track.chisq_);
-        h_nStubTrk->Fill(track.stubID_.size());
+        nTrkSec_tot[track.nSector_]++;
+        if( track.eta_<=-1.0 ) nTrkSec_eta[track.nSector_][0]++;
+        if( track.eta_>-1.0 && track.eta_<=0) nTrkSec_eta[track.nSector_][1]++;
+        if( track.eta_<1.0 && track.eta_>0) nTrkSec_eta[track.nSector_][2]++;
+        if( track.eta_>=1.0 ) nTrkSec_eta[track.nSector_][3]++;
 
-        nTrkSec_tot[track.sector_]++;
+        h_iLTkt_tot->Fill(track.iLTkt_);
 
-        if( track.eta_<=-1.0 ) nTrkSec_eta[track.sector_][0]++;
-        if( track.eta_>-1.0 && track.eta_<=0) nTrkSec_eta[track.sector_][1]++;
-        if( track.eta_<1.0 && track.eta_>0) nTrkSec_eta[track.sector_][2]++;
-        if( track.eta_>=1.0 ) nTrkSec_eta[track.sector_][3]++;
-
-        // Catch 7-stub tracks
-        if(track.stubID_.size()>6) {
-          cout << "Track with 7 stubs! Seed =" << track.seed_ << endl << "layers = ";
-          for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
-            cout << st->first << ", ";
-          }
-          cout << endl;
-        }
-
-        // Track dump -- matches fpga.cc
-          printf("Track Parameters: \n");
-          printf("irinv = %i \n", track.irinv_ );
-          printf("iphi0 = %i \n", track.iphi0_ );
-          printf("iz0   = %i \n", track.iz0_ );
-          printf("it    = %i \n", track.it_ );
-          printf("stubID=");
-          std::map<int, int> stubs = track.stubID_;
-          for(std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) printf(" %i -- %i ",sb->first,sb->second);
-          printf("\n");
-          printf("dup   = %i\n \n", track.duplicate_);
-		      printf("chisq   = %f\n \n", (*trk)->chisq());
-
-        if(track.duplicate_) {
+        if(duplicateMap.at(ntrk)) {
           nDupTrk_tot++;
         } else {
           //if track isn't a duplicate
           nTrkWODup_tot++;
-          nTrkSecWODup_tot[track.sector_]++;
+          nTrkSecWODup_tot[track.nSector_]++;
 
-          h_iLTktWODup_tot->Fill(track.seed_);
+          h_iLTktWODup_tot->Fill(track.iLTkt_);
 
           h_trkPtWODup_tot->Fill(abs(track.pt_));
-          h_trkPtWODup_low_tot->Fill(abs(track.pt_));
           h_trkPhiWODup_tot->Fill(track.phi_);
           h_trkEtaWODup_tot->Fill(track.eta_);
           h_trkZ0WODup_tot->Fill(track.z0_);
-
-          h_chisq_afterPD->Fill(track.chisq_);
 
         }//end duplicates loop
       }//end if nStub >= nStubs
@@ -468,15 +544,15 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         stubid << Form("Event %i:",i);
         for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++) {
           FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
-          if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !track.duplicate_) {
+          if(nStub[ntrk] >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !duplicateMap.at(ntrk)) {
 
-            h_iLTkt_ghost->Fill(track.seed_);
+            h_iLTkt_ghost->Fill(track.iLTkt_);
 
             //Plot simple variables
             h_trkPhiMulti_tot->Fill(track.phi_);
             h_trkEtaMulti_tot->Fill(track.eta_);
             h_trkZ0Multi_tot->Fill(track.z0_);
-            h_itrkPhiMulti_tot->Fill(track.iphi0_);
+            h_itrkPhiMulti_tot->Fill(track.iphi_);
             h_trkPtMulti_tot->Fill(abs(track.pt_));
 
             //Make a superposition of the sectors
@@ -493,17 +569,17 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         if(stubsTxtFile) {
           for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++){
             FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
-            if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !track.duplicate_) {
+            if(nStub[ntrk] >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !duplicateMap.at(ntrk)) {
               //Output stubids to .txt file
               int nShareGhost=0;
               stubid << Form("\nTrack %i: ",ntrk);
-              stubid << Form(" Phi=%f, Eta=%f, Z0=%f, Pt=%f, iLTkt=%i, Sector=%i", track.phi_,track.eta_,track.z0_,abs(track.pt_),track.seed_,track.sector_);
+              stubid << Form(" Phi=%f, Eta=%f, Z0=%f, Pt=%f, iLTkt=%i, Sector=%i", track.phi_,track.eta_,track.z0_,abs(track.pt_),track.iLTkt_,track.nSector_);
               stubid << Form("\n    Stub ids: ");
               for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
                 stubid << Form("  %i,%i",st->first,st->second);
                 for(int ntrk2=0; ntrk2<(int)fpgaEvent->tracks.size(); ntrk2++) {
                   FPGAEventTrack track2 = fpgaEvent->tracks.at(ntrk2);
-                  if(!track2.duplicate_ && track2.stubID_.size() >= minStubs && abs(track2.pt_)>Minpt && abs(track2.pt_)<Maxpt && ntrk!=ntrk2) {
+                  if(!duplicateMap.at(ntrk2) && nStub[ntrk2] >= minStubs && abs(track2.pt_)>Minpt && abs(track2.pt_)<Maxpt && ntrk!=ntrk2) {
                     if(track2.stubID_.find(st->first) != track2.stubID_.end()) {
                       if(st->second == track2.stubID_[st->first] && st->second != 63) {
                         stubid << "*";
@@ -528,113 +604,136 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 
     int nMCTrkEvt_tot=0;
     int nMCTrkSec_tot[28]={0};
-    for(int ntrk=0; ntrk<(int)fpgaEvent->mcTracks.size(); ntrk++){
+    if(nTrkWODup_tot>0) {
+      for(int ntrk=0; ntrk<(int)fpgaEvent->mcTracks.size(); ntrk++){
 
-      FPGAEventMCTrack mcTrack = fpgaEvent->mcTracks.at(ntrk);
+        FPGAEventMCTrack track = fpgaEvent->mcTracks.at(ntrk);
 
-      //apply some track requirement
-      if(abs(mcTrack.pt_)>Minpt && abs(mcTrack.pt_)<Maxpt
-//         && sqrt(mcTrack.vy_*mcTrack.vy_ + mcTrack.vx_*mcTrack.vx_)<0.1  
-//         && checkType(mcTrack.type_,true)
-//         && fabs(mcTrack.eta_)<2.5
-//         && fabs(mcTrack.vz_)<20
-         ) {
+        //apply some track requirement
+        if(abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt
+           && sqrt(track.vy_*track.vy_ + track.vx_*track.vx_)<0.1  
+           && checkType(track.type_,true)
+           && fabs(track.eta_)<2.5
+           && fabs(track.vz_)<20
+           ) {
 
-        //if(!checkType(mcTrack.type_,false)) printf("Type neither good nor bad %i\n",mcTrack.type_);
-        h_mcTrkPt_tot->Fill(abs(mcTrack.pt_));
-        h_mcTrkPt_low_tot->Fill(abs(mcTrack.pt_));
-        h_mcTrkPhi_tot->Fill(mcTrack.phi_); 
-        h_mcTrkZ0_tot->Fill(mcTrack.vz_);
-        h_mcTrkVr_tot->Fill(sqrt(mcTrack.vy_*mcTrack.vy_ + mcTrack.vx_*mcTrack.vx_));   
-        h_mcTrkEta_tot->Fill(mcTrack.eta_);
-        h_mcType_tot->Fill(mcTrack.type_);
+          //if(!checkType(track.type_,false)) printf("Type neither good nor bad %i\n",track.type_);
+          h_mcTrkPt_tot->Fill(abs(track.pt_));  
+          h_mcTrkPhi_tot->Fill(track.phi_); 
+          h_mcTrkZ0_tot->Fill(track.vz_);
+          h_mcTrkVr_tot->Fill(sqrt(track.vy_*track.vy_ + track.vx_*track.vx_));   
+          h_mcTrkEta_tot->Fill(track.eta_);
+          h_mcType_tot->Fill(track.type_);
 
-        //Tally number of tracks per event and sector (artifically)
-        nMCTrkEvt_tot++;
-        nMCTrkSec_tot[(int)((mcTrack.phi_+TMath::Pi())/(TMath::TwoPi()/28))]++;
+          //Tally number of tracks per event and sector (artifically)
+          nMCTrkEvt_tot++;
+          nMCTrkSec_tot[(int)((track.phi_+TMath::Pi())/(TMath::TwoPi()/28))]++;
 
-        // Try to see if this particle can be matched to a found track
-        FPGAEventTrackMatch *bestMatch = 0;
-        for(int fntrk=0; fntrk<(int)fpgaEvent->tracks.size(); fntrk++){
-          FPGAEventTrack fpgaTrack = fpgaEvent->tracks.at(fntrk);
+          // Try to see if this particle can be matched to a found track
+          FPGAEventTrackMatch *bestMatch = 0;
+          for(int fntrk=0; fntrk<(int)fpgaEvent->tracks.size(); fntrk++){
+            if(!duplicateMap.at(fntrk)) {
+              FPGAEventTrack fpgaTrack = fpgaEvent->tracks.at(fntrk);
 
-          if(fpgaTrack.stubID_.size() > minStubs && !fpgaTrack.duplicate_) {
-            FPGAEventTrackMatch *match = new FPGAEventTrackMatch(mcTrack,fpgaTrack);
+              int nStubMC = fpgaTrack.stubID_.size();
 
-            h_matchDeltaPhi_AllM_tot->Fill(match->deltaPhi_);
-            h_matchDeltaEta_AllM_tot->Fill(match->deltaEta_);
-            h_matchDeltaR_AllM_tot  ->Fill(match->deltaR_);
-            h_matchDeltaZ0_AllM_tot ->Fill(match->deltaZ0_);
-            h_matchDeltaPtOPt_AllM_tot ->Fill(match->deltaPt_/abs(mcTrack.pt_));
+              //discriminate between tracklet regions
+              int r = -1;
+              if(fpgaTrack.iLTkt_ == 1 || fpgaTrack.iLTkt_ == 3 || fpgaTrack.iLTkt_ == 5)
+                r = 0; // barrel only tracklet region
+              if(abs(fpgaTrack.iLTkt_) == 11 || abs(fpgaTrack.iLTkt_) == 13)
+                r = 1; // disk only tracklet regions
+              if(abs(fpgaTrack.iLTkt_) == 21 || abs(fpgaTrack.iLTkt_) == 22) {
+                r = 2; // overlap tracklet region
+//                cout << "Stubs: ";
+//                for(std::map<int, int>::iterator  st=fpgaTrack.stubID_.begin(); st!=fpgaTrack.stubID_.end(); st++) {
+//                  cout << st->first << " ";
+//                }
+//                cout << endl;
+              }
 
-            h_matchDeltaPhi_chi2_AllM->Fill(match->deltaPhi_,fpgaTrack.chisq_);
-            h_matchDeltaEta_chi2_AllM->Fill(match->deltaEta_,fpgaTrack.chisq_);
-            h_matchDeltaR_chi2_AllM->Fill(match->deltaR_,fpgaTrack.chisq_);
-            h_matchDeltaZ0_chi2_AllM->Fill(match->deltaZ0_,fpgaTrack.chisq_);
-            h_matchDeltaPtOPt_chi2_AllM->Fill(match->deltaPt_/abs(mcTrack.pt_),fpgaTrack.chisq_);
+              if(nStubMC >= minStubs && !duplicateMap.at(fntrk)) {
+                FPGAEventTrackMatch *match = new FPGAEventTrackMatch(track,fpgaTrack);
 
-            if(fpgaTrack.chisq_ >= 2.0 && fpgaTrack.chisq_ < 3.0) {
-              h_matchDeltaPhi_chi2_2to3->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_2to3->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_2to3->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_2to3->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_2to3->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.chisq_ >= 3.0 && fpgaTrack.chisq_ < 4.0) {
-              h_matchDeltaPhi_chi2_3to4->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_3to4->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_3to4->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_3to4->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_3to4->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.chisq_ >= 4.0 && fpgaTrack.chisq_ < 5.0) {
-              h_matchDeltaPhi_chi2_4to5->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_4to5->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_4to5->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_4to5->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_4to5->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.chisq_ >= 8.0 && fpgaTrack.chisq_ < 12.0) {
-              h_matchDeltaPhi_chi2_8to12->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_8to12->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_8to12->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_8to12->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_8to12->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
+                h_matchDeltaPhi_AllM_tot->Fill(match->deltaPhi_);
+                h_matchDeltaEta_AllM_tot->Fill(match->deltaEta_);
+                h_matchDeltaR_AllM_tot  ->Fill(match->deltaR_);
+                h_matchDeltaZ0_AllM_tot ->Fill(match->deltaZ0_);
+                h_matchDeltaPtOPt_AllM_tot ->Fill(match->deltaPt_/abs(track.pt_));
 
-            int iregion = abs(fpgaTrack.seed_/10);
-            if(fpgaTrack.stubID_.size() == 4) {
-              h_matchDeltaPhi_trklet_nS4[iregion]->Fill(match->deltaPhi_);
-              h_matchDeltaEta_trklet_nS4[iregion]->Fill(match->deltaEta_);
-              h_matchDeltaR_trklet_nS4[iregion]  ->Fill(match->deltaR_);
-              h_matchDeltaZ0_trklet_nS4[iregion] ->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_trklet_nS4[iregion] ->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.stubID_.size() == 5) {
-              h_matchDeltaPhi_trklet_nS5[iregion]->Fill(match->deltaPhi_);
-              h_matchDeltaEta_trklet_nS5[iregion]->Fill(match->deltaEta_);
-              h_matchDeltaR_trklet_nS5[iregion]  ->Fill(match->deltaR_);
-              h_matchDeltaZ0_trklet_nS5[iregion] ->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_trklet_nS5[iregion] ->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.stubID_.size() >= 6) {
-              h_matchDeltaPhi_trklet_nS6[iregion]->Fill(match->deltaPhi_);
-              h_matchDeltaEta_trklet_nS6[iregion]->Fill(match->deltaEta_);
-              h_matchDeltaR_trklet_nS6[iregion]  ->Fill(match->deltaR_);
-              h_matchDeltaZ0_trklet_nS6[iregion] ->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_trklet_nS6[iregion] ->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(bestMatch == 0 ) {
-              //minimal requirements for the first match
-              if(match->deltaR_ < 0.2) bestMatch = match;
-            } else {
-              if( match->deltaR_ < bestMatch->deltaR_ )
-                bestMatch = match;
-            } //picked best match
-          } //end minStubs requirement
-        } //end loop over fpga tracks
-      }//end if particle passes selection
-    }//end loop over MC tracks
+                h_matchDeltaPhi_chi2_AllM->Fill(match->deltaPhi_,fpgaTrack.chiS_);
+                h_matchDeltaEta_chi2_AllM->Fill(match->deltaEta_,fpgaTrack.chiS_);
+                h_matchDeltaR_chi2_AllM->Fill(match->deltaR_,fpgaTrack.chiS_);
+                h_matchDeltaZ0_chi2_AllM->Fill(match->deltaZ0_,fpgaTrack.chiS_);
+                h_matchDeltaPtOPt_chi2_AllM->Fill(match->deltaPt_/abs(track.pt_),fpgaTrack.chiS_);
+
+                if(fpgaTrack.chiS_ >= 1.0 && fpgaTrack.chiS_ < 2.0) {
+                  h_matchDeltaPhi_chi2_1to2->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_chi2_1to2->Fill(match->deltaEta_);
+                  h_matchDeltaR_chi2_1to2->Fill(match->deltaR_);
+                  h_matchDeltaZ0_chi2_1to2->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_chi2_1to2->Fill(match->deltaPt_/abs(track.pt_));
+                }
+
+                if(fpgaTrack.chiS_ >= 2.0 && fpgaTrack.chiS_ < 3.0) {
+                  h_matchDeltaPhi_chi2_2to3->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_chi2_2to3->Fill(match->deltaEta_);
+                  h_matchDeltaR_chi2_2to3->Fill(match->deltaR_);
+                  h_matchDeltaZ0_chi2_2to3->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_chi2_2to3->Fill(match->deltaPt_/abs(track.pt_));
+                }
+
+                if(fpgaTrack.chiS_ >= 3.0 && fpgaTrack.chiS_ < 4.0) {
+                  h_matchDeltaPhi_chi2_3to4->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_chi2_3to4->Fill(match->deltaEta_);
+                  h_matchDeltaR_chi2_3to4->Fill(match->deltaR_);
+                  h_matchDeltaZ0_chi2_3to4->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_chi2_3to4->Fill(match->deltaPt_/abs(track.pt_));
+                }
+
+                if(fpgaTrack.chiS_ >= 4.0 && fpgaTrack.chiS_ < 10.0) {
+                  h_matchDeltaPhi_chi2_4to10->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_chi2_4to10->Fill(match->deltaEta_);
+                  h_matchDeltaR_chi2_4to10->Fill(match->deltaR_);
+                  h_matchDeltaZ0_chi2_4to10->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_chi2_4to10->Fill(match->deltaPt_/abs(track.pt_));
+                }
+
+                if(nStubMC == 4) {
+                  h_matchDeltaPhi_trklet_nS4[r]->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_trklet_nS4[r]->Fill(match->deltaEta_);
+                  h_matchDeltaR_trklet_nS4[r]  ->Fill(match->deltaR_);
+                  h_matchDeltaZ0_trklet_nS4[r] ->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_trklet_nS4[r] ->Fill(match->deltaPt_/abs(track.pt_));
+                }
+                if(nStubMC == 5) {
+                  h_matchDeltaPhi_trklet_nS5[r]->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_trklet_nS5[r]->Fill(match->deltaEta_);
+                  h_matchDeltaR_trklet_nS5[r]  ->Fill(match->deltaR_);
+                  h_matchDeltaZ0_trklet_nS5[r] ->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_trklet_nS5[r] ->Fill(match->deltaPt_/abs(track.pt_));
+                }
+                if(nStubMC >= 6) {
+                  h_matchDeltaPhi_trklet_nS6[r]->Fill(match->deltaPhi_);
+                  h_matchDeltaEta_trklet_nS6[r]->Fill(match->deltaEta_);
+                  h_matchDeltaR_trklet_nS6[r]  ->Fill(match->deltaR_);
+                  h_matchDeltaZ0_trklet_nS6[r] ->Fill(match->deltaZ0_);
+                  h_matchDeltaPtOPt_trklet_nS6[r] ->Fill(match->deltaPt_/abs(track.pt_));
+                }
+
+                if(bestMatch == 0 ) {
+                  //minimal requirements for the first match
+                  if(match->deltaR_ < 0.2 && !duplicateMap.at(fntrk) ) bestMatch = match;
+                } else {
+                  if( match->deltaR_ < bestMatch->deltaR_ && !duplicateMap.at(fntrk) )
+                    bestMatch = match;
+                } //picked best match
+              } //end minStubs requirement
+            } //end not a duplicate requirement
+          } //end loop over fpga tracks
+        }//end if particle passes selection
+      }//end loop over MC tracks
+    }//end if event has FPGA track
 
     //Make total sector plots
     h_nMCTrkEvt_tot->Fill(nMCTrkEvt_tot);
