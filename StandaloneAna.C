@@ -98,7 +98,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_mcTrkEta_tot = new TH1F("h_mcTrkEta_tot","mc trk Eta",100,-5.,5.);
   TH1F* h_mcType_tot   = new TH1F("h_mcType_tot",  "mc type",801,-400.5,400.5);
 
-  TH1F* h_trkPtWODup_tot   = new TH1F("h_trkPtWODup_tot","trk pt",200,-25.,25.);
+  TH1F* h_trkPtWODup_tot   = new TH1F("h_trkPtWODup_tot","trk pt",200,0,25.);
   TH1F* h_trkPtWODup_low_tot   = new TH1F("h_trkPtWODup_low_tot","trk pt",50,0.,10.);
   TH1F* h_trkPhiWODup_tot  = new TH1F("h_trkPhiWODup_tot","trk (global) phi",100,0.,TMath::TwoPi());
   TH1F* h_trkEtaWODup_tot  = new TH1F("h_trkEtaWODup_tot","trk eta",100,-4.,4.);
@@ -153,7 +153,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   */
 
   TH1F* h_nStub = new TH1F("h_nStub","nStub per Event",31,-0.5,30.5);
-  TH1F* h_nStubTrk     = new TH1F("h_nStubTrk","Num Stubs per Track",8,-0.5,8.5);
+  TH1F* h_nStubTrk     = new TH1F("h_nStubTrk","Num Stubs per Track",9,-0.5,8.5);
   TH1F* h_nStub_ghost = new TH1F("h_nStub_ghost","nStub per Event with ghosts",31,-0.5,30.5);
   TH1F* h_iLTkt_tot = new TH1F("h_iLTkt_tot","Track seed",45,-22.5,22.5);
   TH1F* h_iLTktWODup_tot = new TH1F("h_iLTktWODup_tot","Track seed W/O duplicates",45,-22.5,22.5);
@@ -162,7 +162,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_matchDeltaPhi_AllM_tot   = new TH1F("h_matchDeltaPhi_AllM_tot","fpga-mc delta phi (all)",100,-0.003,0.003);
   TH1F* h_matchDeltaEta_AllM_tot   = new TH1F("h_matchDeltaEta_AllM_tot","fpga-mc delta eta (all)",100,-0.025,0.025);
   TH1F* h_matchDeltaR_AllM_tot     = new TH1F("h_matchDeltaR_AllM_tot"  ,"fpga-mc delta R (all)"  ,100,0.,0.025);
-  TH1F* h_matchDeltaZ0_AllM_tot    = new TH1F("h_matchDeltaZ0_AllM_tot"  ,"fpga-mc delta Z0 (all)"  ,100,-10,10);
+  TH1F* h_matchDeltaZ0_AllM_tot    = new TH1F("h_matchDeltaZ0_AllM_tot"  ,"fpga-mc delta Z0 (all)"  ,100,-1.5,1.5);
   TH1F* h_matchDeltaPtOPt_AllM_tot = new TH1F("h_matchDeltaPtOPt_AllM_tot" ,"fpga-mc (delta Pt)/Pt (all)" ,100,-0.1,0.1);
 
   TH2F* h_matchDeltaPhi_chi2_AllM   = new TH2F("h_matchDeltaPhi_chi2_AllM","fpga-mc delta phi v. chi2",40,-0.003,0.003,40,0,20);
@@ -171,29 +171,29 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH2F* h_matchDeltaZ0_chi2_AllM    = new TH2F("h_matchDeltaZ0_chi2_AllM"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10,40,0,20);
   TH2F* h_matchDeltaPtOPt_chi2_AllM = new TH2F("h_matchDeltaPtOPt_chi2_AllM" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1,40,0,20);
 
+  TH1F* h_matchDeltaPhi_chi2_0to1   = new TH1F("h_matchDeltaPhi_chi2_0to1","fpga-mc delta phi v. chi2",40,-0.003,0.003);
+  TH1F* h_matchDeltaEta_chi2_0to1   = new TH1F("h_matchDeltaEta_chi2_0to1","fpga-mc delta eta v. chi2",40,-0.025,0.025);
+  TH1F* h_matchDeltaR_chi2_0to1     = new TH1F("h_matchDeltaR_chi2_0to1"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
+  TH1F* h_matchDeltaZ0_chi2_0to1    = new TH1F("h_matchDeltaZ0_chi2_0to1"  ,"fpga-mc delta Z0 v. chi2"  ,40,-1.5,1.5);
+  TH1F* h_matchDeltaPtOPt_chi2_0to1 = new TH1F("h_matchDeltaPtOPt_chi2_0to1" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
+
+  TH1F* h_matchDeltaPhi_chi2_1to2   = new TH1F("h_matchDeltaPhi_chi2_1to2","fpga-mc delta phi v. chi2",40,-0.003,0.003);
+  TH1F* h_matchDeltaEta_chi2_1to2   = new TH1F("h_matchDeltaEta_chi2_1to2","fpga-mc delta eta v. chi2",40,-0.025,0.025);
+  TH1F* h_matchDeltaR_chi2_1to2     = new TH1F("h_matchDeltaR_chi2_1to2"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
+  TH1F* h_matchDeltaZ0_chi2_1to2    = new TH1F("h_matchDeltaZ0_chi2_1to2"  ,"fpga-mc delta Z0 v. chi2"  ,40,-1.5,1.5);
+  TH1F* h_matchDeltaPtOPt_chi2_1to2 = new TH1F("h_matchDeltaPtOPt_chi2_1to2" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
+
   TH1F* h_matchDeltaPhi_chi2_2to3   = new TH1F("h_matchDeltaPhi_chi2_2to3","fpga-mc delta phi v. chi2",40,-0.003,0.003);
   TH1F* h_matchDeltaEta_chi2_2to3   = new TH1F("h_matchDeltaEta_chi2_2to3","fpga-mc delta eta v. chi2",40,-0.025,0.025);
   TH1F* h_matchDeltaR_chi2_2to3     = new TH1F("h_matchDeltaR_chi2_2to3"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_2to3    = new TH1F("h_matchDeltaZ0_chi2_2to3"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
+  TH1F* h_matchDeltaZ0_chi2_2to3    = new TH1F("h_matchDeltaZ0_chi2_2to3"  ,"fpga-mc delta Z0 v. chi2"  ,40,-1.5,1.5);
   TH1F* h_matchDeltaPtOPt_chi2_2to3 = new TH1F("h_matchDeltaPtOPt_chi2_2to3" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
 
-  TH1F* h_matchDeltaPhi_chi2_3to4   = new TH1F("h_matchDeltaPhi_chi2_3to4","fpga-mc delta phi v. chi2",40,-0.003,0.003);
-  TH1F* h_matchDeltaEta_chi2_3to4   = new TH1F("h_matchDeltaEta_chi2_3to4","fpga-mc delta eta v. chi2",40,-0.025,0.025);
-  TH1F* h_matchDeltaR_chi2_3to4     = new TH1F("h_matchDeltaR_chi2_3to4"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_3to4    = new TH1F("h_matchDeltaZ0_chi2_3to4"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
-  TH1F* h_matchDeltaPtOPt_chi2_3to4 = new TH1F("h_matchDeltaPtOPt_chi2_3to4" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
-
-  TH1F* h_matchDeltaPhi_chi2_4to5   = new TH1F("h_matchDeltaPhi_chi2_4to5","fpga-mc delta phi v. chi2",40,-0.003,0.003);
-  TH1F* h_matchDeltaEta_chi2_4to5   = new TH1F("h_matchDeltaEta_chi2_4to5","fpga-mc delta eta v. chi2",40,-0.025,0.025);
-  TH1F* h_matchDeltaR_chi2_4to5     = new TH1F("h_matchDeltaR_chi2_4to5"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_4to5    = new TH1F("h_matchDeltaZ0_chi2_4to5"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
-  TH1F* h_matchDeltaPtOPt_chi2_4to5 = new TH1F("h_matchDeltaPtOPt_chi2_4to5" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
-
-  TH1F* h_matchDeltaPhi_chi2_8to12   = new TH1F("h_matchDeltaPhi_chi2_8to12","fpga-mc delta phi v. chi2",40,-0.003,0.003);
-  TH1F* h_matchDeltaEta_chi2_8to12   = new TH1F("h_matchDeltaEta_chi2_8to12","fpga-mc delta eta v. chi2",40,-0.025,0.025);
-  TH1F* h_matchDeltaR_chi2_8to12     = new TH1F("h_matchDeltaR_chi2_8to12"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
-  TH1F* h_matchDeltaZ0_chi2_8to12    = new TH1F("h_matchDeltaZ0_chi2_8to12"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10);
-  TH1F* h_matchDeltaPtOPt_chi2_8to12 = new TH1F("h_matchDeltaPtOPt_chi2_8to12" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
+  TH1F* h_matchDeltaPhi_chi2_3to10   = new TH1F("h_matchDeltaPhi_chi2_3to10","fpga-mc delta phi v. chi2",40,-0.003,0.003);
+  TH1F* h_matchDeltaEta_chi2_3to10   = new TH1F("h_matchDeltaEta_chi2_3to10","fpga-mc delta eta v. chi2",40,-0.025,0.025);
+  TH1F* h_matchDeltaR_chi2_3to10     = new TH1F("h_matchDeltaR_chi2_3to10"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025);
+  TH1F* h_matchDeltaZ0_chi2_3to10    = new TH1F("h_matchDeltaZ0_chi2_3to10"  ,"fpga-mc delta Z0 v. chi2"  ,40,-1.5,1.5);
+  TH1F* h_matchDeltaPtOPt_chi2_3to10 = new TH1F("h_matchDeltaPtOPt_chi2_3to10" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1);
 
   TH2F* h_nTrkVsmcTrkPt_tot      = new TH2F("h_nTrkVsmcTrkPt_tot", "nTrk vs mc trk Pt",600,0.,150.,10,-0.5,9.5);
   TH2F* h_nTrkWODupVsmcTrkPt_tot = new TH2F("h_nTrkWODupVsmcTrkPt_tot", "NTrk vs mc trk Pt (after)",600,0.,150.,10,-0.5,9.5);
@@ -285,19 +285,19 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
     h_matchDeltaPhi_trklet_nS4[r]   = new TH1F("h_matchDeltaPhi_nS4","fpga-mc delta phi (nstub=4)",100,-0.003,0.003);
     h_matchDeltaEta_trklet_nS4[r]   = new TH1F("h_matchDeltaEta_nS4","fpga-mc delta eta (nstub=4)",100,-0.025,0.025);
     h_matchDeltaR_trklet_nS4[r]     = new TH1F("h_matchDeltaR_nS4"  ,"fpga-mc delta R (nstub=4)"  ,100,0.,0.025);
-    h_matchDeltaZ0_trklet_nS4[r]    = new TH1F("h_matchDeltaZ0_nS4"  ,"fpga-mc delta Z0 (nstub=4)"  ,100,-2.5,2.5);
+    h_matchDeltaZ0_trklet_nS4[r]    = new TH1F("h_matchDeltaZ0_nS4"  ,"fpga-mc delta Z0 (nstub=4)"  ,100,-1.5,1.5);
     h_matchDeltaPtOPt_trklet_nS4[r] = new TH1F("h_matchDeltaPtOPt_nS4" ,"fpga-mc (delta Pt)/Pt (nstub=4)" ,100,-0.1,0.1);
 
     h_matchDeltaPhi_trklet_nS5[r]   = new TH1F("h_matchDeltaPhi_nS5","fpga-mc delta phi (nstub=5)",100,-0.003,0.003);
     h_matchDeltaEta_trklet_nS5[r]   = new TH1F("h_matchDeltaEta_nS5","fpga-mc delta eta (nstub=5)",100,-0.025,0.025);
     h_matchDeltaR_trklet_nS5[r]     = new TH1F("h_matchDeltaR_nS5"  ,"fpga-mc delta R (nstub=5)"  ,100,0.,0.025);
-    h_matchDeltaZ0_trklet_nS5[r]    = new TH1F("h_matchDeltaZ0_nS5"  ,"fpga-mc delta Z0 (nstub=5)"  ,100,-2.5,2.5);
+    h_matchDeltaZ0_trklet_nS5[r]    = new TH1F("h_matchDeltaZ0_nS5"  ,"fpga-mc delta Z0 (nstub=5)"  ,100,-1.5,1.5);
     h_matchDeltaPtOPt_trklet_nS5[r] = new TH1F("h_matchDeltaPtOPt_nS5" ,"fpga-mc (delta Pt)/Pt (nstub=5)" ,100,-0.1,0.1);
 
     h_matchDeltaPhi_trklet_nS6[r]   = new TH1F("h_matchDeltaPhi_nS6","fpga-mc delta phi (nstub=6)",100,-0.003,0.003);
     h_matchDeltaEta_trklet_nS6[r]   = new TH1F("h_matchDeltaEta_nS6","fpga-mc delta eta (nstub=6)",100,-0.025,0.025);
     h_matchDeltaR_trklet_nS6[r]     = new TH1F("h_matchDeltaR_nS6"  ,"fpga-mc delta R (nstub=6)"  ,100,0.,0.025);
-    h_matchDeltaZ0_trklet_nS6[r]    = new TH1F("h_matchDeltaZ0_nS6"  ,"fpga-mc delta Z0 (nstub=6)"  ,100,-2.5,2.5);
+    h_matchDeltaZ0_trklet_nS6[r]    = new TH1F("h_matchDeltaZ0_nS6"  ,"fpga-mc delta Z0 (nstub=6)"  ,100,-1.5,1.5);
     h_matchDeltaPtOPt_trklet_nS6[r] = new TH1F("h_matchDeltaPtOPt_nS6" ,"fpga-mc (delta Pt)/Pt (nstub=6)" ,100,-0.1,0.1);
   }
 
@@ -382,17 +382,17 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         }
 
         // Track dump -- matches fpga.cc
-          printf("Track Parameters: \n");
-          printf("irinv = %i \n", track.irinv_ );
-          printf("iphi0 = %i \n", track.iphi0_ );
-          printf("iz0   = %i \n", track.iz0_ );
-          printf("it    = %i \n", track.it_ );
-          printf("stubID=");
-          std::map<int, int> stubs = track.stubID_;
-          for(std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) printf(" %i -- %i ",sb->first,sb->second);
-          printf("\n");
-          printf("dup   = %i\n \n", track.duplicate_);
-		      printf("chisq   = %f\n \n", (*trk)->chisq());
+//          printf("Track Parameters: \n");
+//          printf("irinv = %i \n", track.irinv_ );
+//          printf("iphi0 = %i \n", track.iphi0_ );
+//          printf("iz0   = %i \n", track.iz0_ );
+//          printf("it    = %i \n", track.it_ );
+//          printf("stubID=");
+//          std::map<int, int> stubs = track.stubID_;
+//          for(std::map<int, int>::iterator sb=stubs.begin(); sb!=stubs.end(); sb++) printf(" %i -- %i ",sb->first,sb->second);
+//          printf("\n");
+//          printf("dup   = %i\n \n", track.duplicate_);
+//		      printf("chisq   = %f\n \n", track.chisq_);
 
         if(track.duplicate_) {
           nDupTrk_tot++;
@@ -405,7 +405,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 
           h_trkPtWODup_tot->Fill(abs(track.pt_));
           h_trkPtWODup_low_tot->Fill(abs(track.pt_));
-          h_trkPhiWODup_tot->Fill(track.phi_);
+          h_trkPhiWODup_tot->Fill(track.phi0_);
           h_trkEtaWODup_tot->Fill(track.eta_);
           h_trkZ0WODup_tot->Fill(track.z0_);
 
@@ -473,18 +473,18 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
             h_iLTkt_ghost->Fill(track.seed_);
 
             //Plot simple variables
-            h_trkPhiMulti_tot->Fill(track.phi_);
+            h_trkPhiMulti_tot->Fill(track.phi0_);
             h_trkEtaMulti_tot->Fill(track.eta_);
             h_trkZ0Multi_tot->Fill(track.z0_);
             h_itrkPhiMulti_tot->Fill(track.iphi0_);
             h_trkPtMulti_tot->Fill(abs(track.pt_));
 
             //Make a superposition of the sectors
-            if(track.phi_<0) {
-              h_trkPhiMultiLayered_tot->Fill(track.phi_+TMath::TwoPi()/28);
+            if(track.phi0_<0) {
+              h_trkPhiMultiLayered_tot->Fill(track.phi0_+TMath::TwoPi()/28);
             } else {
-              int nPhiSec=(track.phi_/(TMath::TwoPi()/28));
-              h_trkPhiMultiLayered_tot->Fill(track.phi_-nPhiSec*TMath::TwoPi()/28);
+              int nPhiSec=(track.phi0_/(TMath::TwoPi()/28));
+              h_trkPhiMultiLayered_tot->Fill(track.phi0_-nPhiSec*TMath::TwoPi()/28);
             }
           }
         }
@@ -497,7 +497,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
               //Output stubids to .txt file
               int nShareGhost=0;
               stubid << Form("\nTrack %i: ",ntrk);
-              stubid << Form(" Phi=%f, Eta=%f, Z0=%f, Pt=%f, iLTkt=%i, Sector=%i", track.phi_,track.eta_,track.z0_,abs(track.pt_),track.seed_,track.sector_);
+              stubid << Form(" Phi=%f, Eta=%f, Z0=%f, Pt=%f, iLTkt=%i, Sector=%i", track.phi0_,track.eta_,track.z0_,abs(track.pt_),track.seed_,track.sector_);
               stubid << Form("\n    Stub ids: ");
               for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
                 stubid << Form("  %i,%i",st->first,st->second);
@@ -558,7 +558,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         for(int fntrk=0; fntrk<(int)fpgaEvent->tracks.size(); fntrk++){
           FPGAEventTrack fpgaTrack = fpgaEvent->tracks.at(fntrk);
 
-          if(fpgaTrack.stubID_.size() > minStubs && !fpgaTrack.duplicate_) {
+          if(fpgaTrack.stubID_.size() >= minStubs && !fpgaTrack.duplicate_) {
             FPGAEventTrackMatch *match = new FPGAEventTrackMatch(mcTrack,fpgaTrack);
 
             h_matchDeltaPhi_AllM_tot->Fill(match->deltaPhi_);
@@ -573,6 +573,20 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
             h_matchDeltaZ0_chi2_AllM->Fill(match->deltaZ0_,fpgaTrack.chisq_);
             h_matchDeltaPtOPt_chi2_AllM->Fill(match->deltaPt_/abs(mcTrack.pt_),fpgaTrack.chisq_);
 
+            if(fpgaTrack.chisq_ >= 0.0 && fpgaTrack.chisq_ < 1.0) {
+              h_matchDeltaPhi_chi2_0to1->Fill(match->deltaPhi_);
+              h_matchDeltaEta_chi2_0to1->Fill(match->deltaEta_);
+              h_matchDeltaR_chi2_0to1->Fill(match->deltaR_);
+              h_matchDeltaZ0_chi2_0to1->Fill(match->deltaZ0_);
+              h_matchDeltaPtOPt_chi2_0to1->Fill(match->deltaPt_/abs(mcTrack.pt_));
+            }
+            if(fpgaTrack.chisq_ >= 1.0 && fpgaTrack.chisq_ < 2.0) {
+              h_matchDeltaPhi_chi2_1to2->Fill(match->deltaPhi_);
+              h_matchDeltaEta_chi2_1to2->Fill(match->deltaEta_);
+              h_matchDeltaR_chi2_1to2->Fill(match->deltaR_);
+              h_matchDeltaZ0_chi2_1to2->Fill(match->deltaZ0_);
+              h_matchDeltaPtOPt_chi2_1to2->Fill(match->deltaPt_/abs(mcTrack.pt_));
+            }
             if(fpgaTrack.chisq_ >= 2.0 && fpgaTrack.chisq_ < 3.0) {
               h_matchDeltaPhi_chi2_2to3->Fill(match->deltaPhi_);
               h_matchDeltaEta_chi2_2to3->Fill(match->deltaEta_);
@@ -580,26 +594,12 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
               h_matchDeltaZ0_chi2_2to3->Fill(match->deltaZ0_);
               h_matchDeltaPtOPt_chi2_2to3->Fill(match->deltaPt_/abs(mcTrack.pt_));
             }
-            if(fpgaTrack.chisq_ >= 3.0 && fpgaTrack.chisq_ < 4.0) {
-              h_matchDeltaPhi_chi2_3to4->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_3to4->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_3to4->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_3to4->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_3to4->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.chisq_ >= 4.0 && fpgaTrack.chisq_ < 5.0) {
-              h_matchDeltaPhi_chi2_4to5->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_4to5->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_4to5->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_4to5->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_4to5->Fill(match->deltaPt_/abs(mcTrack.pt_));
-            }
-            if(fpgaTrack.chisq_ >= 8.0 && fpgaTrack.chisq_ < 12.0) {
-              h_matchDeltaPhi_chi2_8to12->Fill(match->deltaPhi_);
-              h_matchDeltaEta_chi2_8to12->Fill(match->deltaEta_);
-              h_matchDeltaR_chi2_8to12->Fill(match->deltaR_);
-              h_matchDeltaZ0_chi2_8to12->Fill(match->deltaZ0_);
-              h_matchDeltaPtOPt_chi2_8to12->Fill(match->deltaPt_/abs(mcTrack.pt_));
+            if(fpgaTrack.chisq_ >= 3.0 && fpgaTrack.chisq_ < 10.0) {
+              h_matchDeltaPhi_chi2_3to10->Fill(match->deltaPhi_);
+              h_matchDeltaEta_chi2_3to10->Fill(match->deltaEta_);
+              h_matchDeltaR_chi2_3to10->Fill(match->deltaR_);
+              h_matchDeltaZ0_chi2_3to10->Fill(match->deltaZ0_);
+              h_matchDeltaPtOPt_chi2_3to10->Fill(match->deltaPt_/abs(mcTrack.pt_));
             }
 
             int iregion = abs(fpgaTrack.seed_/10);

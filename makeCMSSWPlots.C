@@ -19,7 +19,7 @@
 #include <fstream>
 #include <iomanip>
 
-void makeSingleHist(TString rootFileName="mu10Analysis.root", TString hname="h_iLTkt") {
+void makeSingleHistCMSSW(TString rootFileName="mu10Analysis.root", TString hname="h_iLTkt") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -65,7 +65,7 @@ void makeSingleHist(TString rootFileName="mu10Analysis.root", TString hname="h_i
 
 }
 
-void makeProfile(TString rootFileName="totalMuFPGAAnalysis.root", TString hname1="h_NTrkVsmcTrkPt_tot", TString hname2="h_NTrkWODupVsmcTrkPt_tot", TString region="total", TString outputname="0") {
+void makeProfileCMSSW(TString rootFileName="totalMuFPGAAnalysis.root", TString hname1="h_NTrkVsmcTrkPt_tot", TString hname2="h_NTrkWODupVsmcTrkPt_tot", TString region="total", TString outputname="0") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -123,7 +123,7 @@ void makeProfile(TString rootFileName="totalMuFPGAAnalysis.root", TString hname1
 
 }
 
-void make2DHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname="h_PhiTanThDiff", TString region="barrelOnly", TString outputname="0") {
+void make2DHistCMSSW(TString rootFileName="totalMuFPGAAnalysis.root", TString hname="h_PhiTanThDiff", TString region="barrelOnly", TString outputname="0") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -171,7 +171,7 @@ void make2DHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname="
 
 }
 
-void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString hname1="h_itrkCurv", TString hname2="h_itrkCurvWODup", TString region="barrelOnly", TString outputname="0", bool plotRatio=true) {
+void makeDoubleHistCMSSW(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString hname1="h_itrkCurv", TString hname2="h_itrkCurvWODup", TString region="barrelOnly", TString outputname="0", bool plotRatio=true) {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile1 = new TFile(rootFileName1);
@@ -292,7 +292,7 @@ void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString ro
 
 }
 
-void makeTripleHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecMC_tot", TString region="total", TString outputname="0") {
+void makeTripleHistCMSSW(TString rootFileName="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecMC_tot", TString region="total", TString outputname="0") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -368,324 +368,7 @@ void makeTripleHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hna
 
 }
 
-void makeBarrelStubHist(TString rootFileName="mu10Analysis.root", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("BarrelStubs");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_L1Multi"+ghost);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_L2Multi"+ghost);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_L3Multi"+ghost);
-        h3->SetLineColor(kYellow+1);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    TH1F* h4 = (TH1F*)d->Get("h_L4Multi"+ghost);
-        h4->SetLineColor(kBlue+1);
-        h4->SetLineWidth(3);
-        h4->SetLineStyle(2);
-        h4->Scale(1/h4->GetEntries());
-        h4->SetStats(0);
-
-    TH1F* h5 = (TH1F*)d->Get("h_L5Multi"+ghost);
-        h5->SetLineColor(kMagenta+2);
-        h5->SetLineWidth(3);
-        h5->SetLineStyle(2);
-        h5->Scale(1/h5->GetEntries());
-        h5->SetStats(0);
-
-    TH1F* h6 = (TH1F*)d->Get("h_L6Multi"+ghost);
-        h6->SetLineColor(kOrange+7);
-        h6->SetLineWidth(3);
-        h6->SetLineStyle(2);
-        h6->Scale(1/h6->GetEntries());
-        h6->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Barrel Stub Multiplicity");
-        hs->SetTitle("Barrel Stub Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Add(h4,"s");
-        hs->Add(h5,"s");
-        hs->Add(h6,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, "L1", "lp");
-    leg->AddEntry(h2, "L2", "lp");
-    leg->AddEntry(h3, "L3", "lp");
-    leg->AddEntry(h4, "L4", "lp");
-    leg->AddEntry(h5, "L5", "lp");
-    leg->AddEntry(h6, "L6", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+"BarrelStubMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void makeDiskStubHist(TString rootFileName="mu10Analysis.root", TString half="F", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("BackwardDiskStubs");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_"+half+"1Multi"+ghost);
-    h1->SetLineColorAlpha(kBlack,0.2);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_"+half+"2Multi"+ghost);
-    h2->SetLineColorAlpha(kRed,0.2);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_"+half+"3Multi"+ghost);
-    h3->SetLineColorAlpha(kYellow+1,0.2);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    TH1F* h4 = (TH1F*)d->Get("h_"+half+"4Multi"+ghost);
-    h4->SetLineColorAlpha(kBlue+1,0.2);
-        h4->SetLineWidth(3);
-        h4->SetLineStyle(2);
-        h4->Scale(1/h4->GetEntries());
-        h4->SetStats(0);
-
-    TH1F* h5 = (TH1F*)d->Get("h_"+half+"5Multi"+ghost);
-    h5->SetLineColorAlpha(kMagenta+2,0.2);
-        h5->SetLineWidth(3);
-        h5->SetLineStyle(2);
-        h5->Scale(1/h5->GetEntries());
-        h5->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Disk Stub Multiplicity");
-        hs->SetTitle(half+" Disk Stub Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Add(h4,"s");
-        hs->Add(h5,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, half+"1", "lp");
-    leg->AddEntry(h2, half+"2", "lp");
-    leg->AddEntry(h3, half+"3", "lp");
-    leg->AddEntry(h4, half+"4", "lp");
-    leg->AddEntry(h5, half+"5", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+half+"DiskStubMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void makeBarrelTrackHist(TString rootFileName="mu10Analysis.root", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("BarrelTracks");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_L1L2Multi"+ghost);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_L3L4Multi"+ghost);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_L5L6Multi"+ghost);
-        h3->SetLineColor(kYellow+1);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Barrel Track Multiplicity");
-        hs->SetTitle("Barrel Track Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, "L1L2", "lp");
-    leg->AddEntry(h2, "L3L4", "lp");
-    leg->AddEntry(h3, "L5L6", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+"BarrelTrackMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void makeDiskTrackHist(TString rootFileName="mu10Analysis.root", TString half="F", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("DiskTracks");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_"+half+"1"+half+"2"+"Multi"+ghost);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_"+half+"3"+half+"4"+"Multi"+ghost);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_"+half+"1L"+"Multi"+ghost);
-        h3->SetLineColor(kYellow+1);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Disk Track Multiplicity");
-        hs->SetTitle("Disk Track Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, half+"1"+half+"2", "lp");
-    leg->AddEntry(h2, half+"3"+half+"4", "lp");
-    leg->AddEntry(h3, half+"1L", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+half+"DiskTrackMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void TwoGauss(TH1F* hist) {
+void TwoGaussCMSSW(TH1F* hist) {
   
      TAxis *xa = hist->GetXaxis();
      TF1 *myF = new TF1("myF","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))+[3]*exp(-(x-[4])*(x-[4])/(2*[5]*[5]))",
@@ -724,7 +407,7 @@ void TwoGauss(TH1F* hist) {
      printf("Weighted Sigmas: with Peak %f with Area %f  68 Percent %f \n",sig3a,sig3b,sig3c);
 }
 
-void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1name="h_matchDeltaPhi_AllM", TString outputname="",double xran=1) {
+void resolutionPlotCMSSW(TString rootFileName="totalMuFPGAAnalysis.root", TString h1name="h_matchDeltaPhi_AllM", TString outputname="",double xran=1) {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -734,35 +417,28 @@ void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1n
 
 	  TCanvas* c = new TCanvas(h1name);
         c->SetGrid();
-
     // Get histogram and draw the fit curve on top
     TH1F* h1 = (TH1F*)d->Get(h1name);
         h1->SetLineColor(kBlack);
         h1->SetLineWidth(3);
         h1->Draw();
+
     gPad->Update();
         h1->Fit("gaus","Q","",-xran,xran);
-
-
     TF1* g1 = h1->GetFunction("gaus");
-//    TF1* g1 = h1->GetFunction("myF");
         g1->SetLineColor(kRed);
+
     TPaveStats *st = (TPaveStats*)h1->FindObject("stats");
         st->SetOptStat(0001101111);
     TList *listOfLines = st->GetListOfLines();
         listOfLines->Remove(st->GetLineWith("Std"));
     st->SetName("Mystats");
     h1->SetStats(0);
-//        st->SetOptStat(000000000);
-//	      st->SetOptFit(0001);
-//    st->AddEntry(myF,"sigma="+myF->GetParameter(sig3c),"");
 
     st->AddText(Form("Sigma = %f",g1->GetParameter(2)));
     st->AddText(Form("Underflow = %.0f",h1->GetBinContent(0)));
     st->AddText(Form("Overflow = %.0f",h1->GetBinContent(h1->GetNbinsX()+1)));
         st->SetOptStat(0001101111);
-//        TLatex *tl = new TLatex(0,0,Form("sigma = ",g1->GetParameter(2)));
-//        listOfLines->Add(tl);
 
     gPad->Modified();
     gPad->Update();
@@ -776,7 +452,7 @@ void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1n
     c->Close();
 }
 
-void doubleResPlots(TString rootFileName1="plusMu10FPGAAnalysis.root", TString rootFileName2="minusMu10FPGAAnalysis.root", TString variable="Pt", TString region="total", TString outputname="0") {
+void doubleResPlotsCMSSW(TString rootFileName1="plusMu10FPGAAnalysis.root", TString rootFileName2="minusMu10FPGAAnalysis.root", TString variable="Pt", TString region="total", TString outputname="0") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile1 = new TFile(rootFileName1);
@@ -861,7 +537,7 @@ void doubleResPlots(TString rootFileName1="plusMu10FPGAAnalysis.root", TString r
     c->Close();
 }
 
-void seedingResolutionPlot(TString rootFileName="singlemu_10000_seedingPD_ana.root", TString h1name="h_matchDeltaPhi_nS4", TString region="barrelOnly", TString outputname="",double xran=1) {
+void seedingResolutionPlotCMSSW(TString rootFileName="singlemu_10000_seedingPD_ana.root", TString h1name="h_matchDeltaPhi_nS4", TString region="barrelOnly", TString outputname="",double xran=1) {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -916,7 +592,7 @@ void seedingResolutionPlot(TString rootFileName="singlemu_10000_seedingPD_ana.ro
 }
 
 
-void combinationResolution(TString rootFileName="singlemu_10000_seedingAna.root", TString variable="Phi", TString outputname="") {
+void combinationResolutionCMSSW(TString rootFileName="singlemu_10000_seedingAna.root", TString variable="Phi", TString outputname="") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -1006,7 +682,7 @@ void combinationResolution(TString rootFileName="singlemu_10000_seedingAna.root"
 
 }
 
-void efficiencyPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString variable="Phi", TString region="etaLess1", TString outputname="plotName") {
+void efficiencyPlotCMSSW(TString rootFileName="totalMuFPGAAnalysis.root", TString variable="Phi", TString region="etaLess1", TString outputname="plotName") {
 
     // Load File and prep for loading hist/saving
     TFile *rootFile = new TFile(rootFileName);
@@ -1063,7 +739,7 @@ void efficiencyPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString var
 
 }
 
-void makeTripleHistSpecial(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString rootFileName3="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecWODup_tot", TString region="total", TString outputname="0") {
+void makeTripleHistSpecialCMSSW(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString rootFileName3="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecWODup_tot", TString region="total", TString outputname="0") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile1 = new TFile(rootFileName1);
@@ -1168,7 +844,7 @@ void makeTripleHistSpecial(TString rootFileName1="totalMuFPGAAnalysis.root", TSt
 
 }
 
-void makeTDRPlot(TString rootFileName1="mu_40000_2to10_adj_analyze.root", TString rootFileName2="mu_40000_2to10_ss_analyze.root", TString rootFileName3="mu_40000_2to10_adj_analyze.root", TString hname1="h_nTrkEvt_tot", TString hname2="h_nTrkEvtWODup_tot", TString hname3="h_nTrkEvtWODup_tot", TString outputname="DuplicateRemovalComparison2-10GeVMuons") {
+void makeTDRPlotCMSSW(TString rootFileName1="mu_40000_2to10_adj_analyze.root", TString rootFileName2="mu_40000_2to10_ss_analyze.root", TString rootFileName3="mu_40000_2to10_adj_analyze.root", TString hname1="h_nTrkEvt_tot", TString hname2="h_nTrkEvtWODup_tot", TString hname3="h_nTrkEvtWODup_tot", TString outputname="DuplicateRemovalComparison2-10GeVMuons") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile1 = new TFile(rootFileName1);
@@ -1251,153 +927,132 @@ void makeTDRPlot(TString rootFileName1="mu_40000_2to10_adj_analyze.root", TStrin
 
 }
 
-void allPlots(TString rootFile="totalMuFPGAAnalysis.root") {
+//void allPlotsCMSSW(TString rootFile="totalMuFPGAAnalysis.root") {
 
-    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "barrelOnly", "stubShare_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "diskOnly", "stubShare_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "overlap", "stubShare_overlap", true);
-//    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "barrelOnly", "nTrkSec_barrel", false);
-//    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "diskOnly", "nTrkSec_disk", false);
-//    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "overlap", "nTrkSec_overlap", false);
-    makeDoubleHist(rootFile, rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "total", "nTrkSec_total", false);
-    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "barrelOnly", "iCurv_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "diskOnly", "iCurv_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "overlap", "iCurv_overlap", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "barrelOnly", "Pt_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "diskOnly", "Pt_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "overlap", "Pt_overlap", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "barrelOnly", "iPhi_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "diskOnly", "iPhi_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "overlap", "iPhi_overlap", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "barrelOnly", "TanTh_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "diskOnly", "TanTh_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "overlap", "TanTh_overlap", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "barrelOnly", "Eta_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "diskOnly", "Eta_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "overlap", "Eta_overlap", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "barrelOnly", "Phi_barrel", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "diskOnly", "Phi_disk", true);
-    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "overlap", "Phi_overlap", true);
+//    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "barrelOnly", "stubShare_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "diskOnly", "stubShare_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_NstubShare", "h_NstubShare_Near", "overlap", "stubShare_overlap", true);
+////    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "barrelOnly", "nTrkSec_barrel", false);
+////    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "diskOnly", "nTrkSec_disk", false);
+////    makeDoubleHist(rootFile, rootFile, "h_nTrkSec", "h_nTrkSecWODup", "overlap", "nTrkSec_overlap", false);
+//    makeDoubleHist(rootFile, rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "total", "nTrkSec_total", false);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "barrelOnly", "iCurv_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "diskOnly", "iCurv_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkCurv", "h_itrkCurvWODup", "overlap", "iCurv_overlap", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "barrelOnly", "Pt_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "diskOnly", "Pt_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkPt", "h_trkPtWODup", "overlap", "Pt_overlap", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "barrelOnly", "iPhi_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "diskOnly", "iPhi_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkPhi", "h_itrkPhiWODup", "overlap", "iPhi_overlap", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "barrelOnly", "TanTh_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "diskOnly", "TanTh_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_itrkTanTh", "h_itrkTanThWODup", "overlap", "TanTh_overlap", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "barrelOnly", "Eta_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "diskOnly", "Eta_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkEta", "h_trkEtaWODup", "overlap", "Eta_overlap", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "barrelOnly", "Phi_barrel", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "diskOnly", "Phi_disk", true);
+//    makeDoubleHist(rootFile, rootFile, "h_trkPhi", "h_trkPhiWODup", "overlap", "Phi_overlap", true);
 
-    makeTripleHist(rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "h_nMCTrkSec_tot", "total", "nTrkSecComb_tot");
-    makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEtaLess1", "nTrkSecComb_etaLess1");
-    makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEta1to1.7", "nTrkSecComb_eta1to1.7");
-    makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEtaMore1.7", "nTrkSecComb_etaMore1.7");
+//    makeTripleHist(rootFile, "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "h_nMCTrkSec_tot", "total", "nTrkSecComb_tot");
+//    makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEtaLess1", "nTrkSecComb_etaLess1");
+//    makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEta1to1.7", "nTrkSecComb_eta1to1.7");
+//    makeTripleHist(rootFile, "h_nTrkSec", "h_nTrkSecWODup", "h_nMCTrkSec", "mcEtaMore1.7", "nTrkSecComb_etaMore1.7");
 
-    make2DHist(rootFile, "h_PhiTanThDiff", "barrelOnly", "PhiTanThDiff_barrel");
-    make2DHist(rootFile, "h_PhiTanThDiff", "diskOnly", "PhiTanThDiff_disk");
-    make2DHist(rootFile, "h_PhiTanThDiff", "overlap", "PhiTanThDiff_overlap");
-    make2DHist(rootFile, "h_NTrkVsmcTrkPt", "mcEtaLess1", "NTrkvsmcPt_EtaLess1");
-    make2DHist(rootFile, "h_NTrkVsmcTrkPt", "mcEta1to1.7", "NTrkvsmcPt_Eta1to1.7");
-    make2DHist(rootFile, "h_NTrkVsmcTrkPt", "mcEtaMore1.7", "NTrkvsmcPt_EtaMore1.7");
-    make2DHist(rootFile, "h_NTrkVsmcTrkPt_tot", "total", "NTrkvsmcPt_total");
-    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt", "mcEtaLess1", "NTrkWODupvsmcPt_EtaLess1");
-    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt", "mcEta1to1.7", "NTrkWODupvsmcPt_Eta1to1.7");
-    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt", "mcEtaMore1.7", "NTrkWODupvsmcPt_EtaMore1.7");
-    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt_tot", "total", "NTrkWODupvsmcPt_total");
-}
+//    make2DHist(rootFile, "h_PhiTanThDiff", "barrelOnly", "PhiTanThDiff_barrel");
+//    make2DHist(rootFile, "h_PhiTanThDiff", "diskOnly", "PhiTanThDiff_disk");
+//    make2DHist(rootFile, "h_PhiTanThDiff", "overlap", "PhiTanThDiff_overlap");
+//    make2DHist(rootFile, "h_NTrkVsmcTrkPt", "mcEtaLess1", "NTrkvsmcPt_EtaLess1");
+//    make2DHist(rootFile, "h_NTrkVsmcTrkPt", "mcEta1to1.7", "NTrkvsmcPt_Eta1to1.7");
+//    make2DHist(rootFile, "h_NTrkVsmcTrkPt", "mcEtaMore1.7", "NTrkvsmcPt_EtaMore1.7");
+//    make2DHist(rootFile, "h_NTrkVsmcTrkPt_tot", "total", "NTrkvsmcPt_total");
+//    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt", "mcEtaLess1", "NTrkWODupvsmcPt_EtaLess1");
+//    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt", "mcEta1to1.7", "NTrkWODupvsmcPt_Eta1to1.7");
+//    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt", "mcEtaMore1.7", "NTrkWODupvsmcPt_EtaMore1.7");
+//    make2DHist(rootFile, "h_NTrkWODupVsmcTrkPt_tot", "total", "NTrkWODupvsmcPt_total");
+//}
 
-void makeProfilePlots(TString rootFile="totalMu10FPGAAnalysis.root") {
+void makeProfilePlotsCMSSW(TString rootFile="totalMu10FPGAAnalysis.root") {
 
-    makeProfile(rootFile, "h_NTrkVsmcTrkPt", "h_NTrkWODupVsmcTrkPt", "mcEtaLess1", "Profile_NTrkvsmcTrkPt_EtaLess1");
-    makeProfile(rootFile, "h_NTrkVsmcTrkPt", "h_NTrkWODupVsmcTrkPt", "mcEta1to1.7", "Profile_NTrkvsmcTrkPt_Eta1to1.7");
-    makeProfile(rootFile, "h_NTrkVsmcTrkPt", "h_NTrkWODupVsmcTrkPt", "mcEtaMore1.7", "Profile_NTrkvsmcTrkPt_EtaMore1.7");
-
-}
-
-void makeTriplePlots() {
-
-    makeTripleHistSpecial("totalMu10_samesecFPGAAnalysis.root", "totalMu10_samesecFPGAAnalysis.root", "totalMu10_adjsecFPGAAnalysis.root", "h_nTrkEvt_tot", "h_nTrkWODup_tot", "h_nTrkEvtWODup_tot", "total", "totalMu10nTrkEvt");
-    makeTripleHistSpecial("totalMu150_samesecFPGAAnalysis.root", "totalMu150_samesecFPGAAnalysis.root", "totalMu150_adjsecFPGAAnalysis.root", "h_nTrkEvt_tot", "h_nTrkWODup_tot", "h_nTrkEvtWODup_tot", "total", "totalMu150nTrkEvt");
-    makeTripleHistSpecial("ttbar_samesecFPGAAnalysis.root", "ttbar_samesecFPGAAnalysis.root", "ttbar_adjsecFPGAAnalysis.root", "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "h_nTrkSecWODup_tot", "total", "ttbar_nTrkSec_tot");
-    makeTripleHistSpecial("ttbar_samesecFPGAAnalysis.root", "ttbar_samesecFPGAAnalysis.root", "ttbar_adjsecFPGAAnalysis.root", "h_nTrkSecTail_tot", "h_nTrkSecWODupTail_tot", "h_nTrkSecWODupTail_tot", "total", "ttbar_nTrkSecTail_tot");
+    makeProfileCMSSW(rootFile, "h_NTrkVsmcTrkPt", "h_NTrkWODupVsmcTrkPt", "mcEtaLess1", "Profile_NTrkvsmcTrkPt_EtaLess1");
+    makeProfileCMSSW(rootFile, "h_NTrkVsmcTrkPt", "h_NTrkWODupVsmcTrkPt", "mcEta1to1.7", "Profile_NTrkvsmcTrkPt_Eta1to1.7");
+    makeProfileCMSSW(rootFile, "h_NTrkVsmcTrkPt", "h_NTrkWODupVsmcTrkPt", "mcEtaMore1.7", "Profile_NTrkvsmcTrkPt_EtaMore1.7");
 
 }
 
-void makeResPlots(TString rootFile="mu10_Canalyze.root") {
+void makeTriplePlotsCMSSW() {
 
-//  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_0to1", "", 0.0015);
-//  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_1to2", "", 0.0015);
-//  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_2to3", "", 0.0015);
-//  resolutionPlot(rootFile, "h_matchDeltaPhi_chi2_3to10", "", 0.0015);
-
-//  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_0to1", "", 0.01);
-//  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_1to2", "", 0.01);
-//  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_2to3", "", 0.01);
-//  resolutionPlot(rootFile, "h_matchDeltaEta_chi2_3to10", "", 0.01);
-
-//  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_0to1", "", 1);
-//  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_1to2", "", 1);
-//  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_2to3", "", 1);
-//  resolutionPlot(rootFile, "h_matchDeltaZ0_chi2_3to10", "", 1);
-
-//  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_0to1", "", 0.03);
-//  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_1to2", "", 0.03);
-//  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_2to3", "", 0.03);
-//  resolutionPlot(rootFile, "h_matchDeltaPtOPt_chi2_3to10", "", 0.03);
-
-//  resolutionPlot(rootFile, "h_matchDeltaPhi_AllM_tot", "", 0.0015);
-//  resolutionPlot(rootFile, "h_matchDeltaEta_AllM_tot", "", 0.01);
-//  resolutionPlot(rootFile, "h_matchDeltaZ0_AllM_tot", "", 1);
-//  resolutionPlot(rootFile, "h_matchDeltaPtOPt_AllM_tot", "", 0.03);
-
-  combinationResolution(rootFile,"Phi","PhiResVsNStub");
-  combinationResolution(rootFile,"Eta","EtaResVsNStub");
-  combinationResolution(rootFile,"Z0","Z0ResVsNStub");
-  combinationResolution(rootFile,"PtOPt","PtOPtResVsNStub");
+    makeTripleHistSpecialCMSSW("totalMu10_samesecFPGAAnalysis.root", "totalMu10_samesecFPGAAnalysis.root", "totalMu10_adjsecFPGAAnalysis.root", "h_nTrkEvt_tot", "h_nTrkWODup_tot", "h_nTrkEvtWODup_tot", "total", "totalMu10nTrkEvt");
+    makeTripleHistSpecialCMSSW("totalMu150_samesecFPGAAnalysis.root", "totalMu150_samesecFPGAAnalysis.root", "totalMu150_adjsecFPGAAnalysis.root", "h_nTrkEvt_tot", "h_nTrkWODup_tot", "h_nTrkEvtWODup_tot", "total", "totalMu150nTrkEvt");
+    makeTripleHistSpecialCMSSW("ttbar_samesecFPGAAnalysis.root", "ttbar_samesecFPGAAnalysis.root", "ttbar_adjsecFPGAAnalysis.root", "h_nTrkSec_tot", "h_nTrkSecWODup_tot", "h_nTrkSecWODup_tot", "total", "ttbar_nTrkSec_tot");
+    makeTripleHistSpecialCMSSW("ttbar_samesecFPGAAnalysis.root", "ttbar_samesecFPGAAnalysis.root", "ttbar_adjsecFPGAAnalysis.root", "h_nTrkSecTail_tot", "h_nTrkSecWODupTail_tot", "h_nTrkSecWODupTail_tot", "total", "ttbar_nTrkSecTail_tot");
 
 }
 
-void makeDoubleResPlots(TString rootFile1="plusMu10FPGAAnalysis.root", TString rootFile2="minusMu10FPGAAnalysis.root") {
+void makeResPlotsCMSSW(TString rootFile="ttbar_CMSSW_700_ana.C") {
 
-    doubleResPlots(rootFile1,rootFile2,"PtOPt","total","double_mcTrkPt");
-    doubleResPlots(rootFile1,rootFile2,"Phi","total","double_mcTrkPhi");
-    doubleResPlots(rootFile1,rootFile2,"Z0","total","double_mcTrkZ0");
-    doubleResPlots(rootFile1,rootFile2,"Eta","total","double_mcTrkEta");
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPhi_AllM", "", 0.0015);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaEta_AllM", "", 0.01);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaZ0_AllM", "", 1);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPtOPt_AllM", "", 0.03);
 
-}
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPhi_chi2_0to1", "", 0.0015);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPhi_chi2_1to2", "", 0.0015);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPhi_chi2_2to4", "", 0.0015);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPhi_chi2_gr4", "", 0.0015);
 
-void makeEffPlots(TString rootFile="totalMuFPGAAnalysis.root") {
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaEta_chi2_0to1", "", 0.01);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaEta_chi2_1to2", "", 0.01);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaEta_chi2_2to4", "", 0.01);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaEta_chi2_gr4", "", 0.01);
 
-    efficiencyPlot(rootFile,"Phi","mcEtaLess1","PhiEff_mcEtaLess1");
-    efficiencyPlot(rootFile,"Eta","mcEtaLess1","EtaEff_mcEtaLess1");
-    efficiencyPlot(rootFile,"Z0","mcEtaLess1","Z0Eff_mcEtaLess1");
-    efficiencyPlot(rootFile,"Pt","mcEtaLess1","PtEff_mcEtaLess1");
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaZ0_chi2_0to1", "", 1);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaZ0_chi2_1to2", "", 1);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaZ0_chi2_2to4", "", 1);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaZ0_chi2_gr4", "", 1);
 
-    efficiencyPlot(rootFile,"Phi","mcEta1to1.7","PhiEff_mcEta1to1.7");
-    efficiencyPlot(rootFile,"Eta","mcEta1to1.7","EtaEff_mcEta1to1.7");
-    efficiencyPlot(rootFile,"Z0","mcEta1to1.7","Z0Eff_mcEta1to1.7");
-    efficiencyPlot(rootFile,"Pt","mcEta1to1.7","PtEff_mcEta1to1.7");
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPtOPt_chi2_0to1", "", 0.03);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPtOPt_chi2_1to2", "", 0.03);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPtOPt_chi2_2to4", "", 0.03);
+  resolutionPlotCMSSW(rootFile, "h_allmatchDeltaPtOPt_chi2_gr4", "", 0.03);
 
-    efficiencyPlot(rootFile,"Phi","mcEtaMore1.7","PhiEff_mcEtaMore1.7");
-    efficiencyPlot(rootFile,"Eta","mcEtaMore1.7","EtaEff_mcEtaMore1.7");
-    efficiencyPlot(rootFile,"Z0","mcEtaMore1.7","Z0Eff_mcEtaMore1.7");
-    efficiencyPlot(rootFile,"Pt","mcEtaMore1.7","PtEff_mcEtaMore1.7");
-
-    efficiencyPlot(rootFile,"Phi","total","PhiEff_total");
-    efficiencyPlot(rootFile,"Eta","total","EtaEff_total");
-    efficiencyPlot(rootFile,"Z0","total","Z0Eff_total");
-    efficiencyPlot(rootFile,"Pt","total","PtEff_total");
-
-}
-
-void makeMultiplicityPlots(TString rootFile="mu10Analysis.root") {
-
-  makeBarrelStubHist(rootFile,"");
-  makeBarrelStubHist(rootFile,"_ghost");
-  makeDiskStubHist(rootFile,"F","");
-  makeDiskStubHist(rootFile,"F","_ghost");
-  makeDiskStubHist(rootFile,"B","");
-  makeDiskStubHist(rootFile,"B","_ghost");
-  makeBarrelTrackHist(rootFile,"");
-  makeBarrelTrackHist(rootFile,"_ghost");
-  makeDiskTrackHist(rootFile,"F","");
-  makeDiskTrackHist(rootFile,"F","_ghost");
-  makeDiskTrackHist(rootFile,"B","");
-  makeDiskTrackHist(rootFile,"B","_ghost");
-  makeSingleHist(rootFile,"h_iLTkt_tot");
-  makeSingleHist(rootFile,"h_iLTktWODup_tot");
-  makeSingleHist(rootFile,"h_iLTkt_ghost");
+//  combinationResolutionCMSSW(rootFile,"Phi","PhiResVsNStub");
+//  combinationResolutionCMSSW(rootFile,"Eta","EtaResVsNStub");
+//  combinationResolutionCMSSW(rootFile,"Z0","Z0ResVsNStub");
+//  combinationResolutionCMSSW(rootFile,"PtOPt","PtOPtResVsNStub");
 
 }
 
+void makeDoubleResPlotsCMSSW(TString rootFile1="plusMu10FPGAAnalysis.root", TString rootFile2="minusMu10FPGAAnalysis.root") {
+
+    doubleResPlotsCMSSW(rootFile1,rootFile2,"PtOPt","total","double_mcTrkPt");
+    doubleResPlotsCMSSW(rootFile1,rootFile2,"Phi","total","double_mcTrkPhi");
+    doubleResPlotsCMSSW(rootFile1,rootFile2,"Z0","total","double_mcTrkZ0");
+    doubleResPlotsCMSSW(rootFile1,rootFile2,"Eta","total","double_mcTrkEta");
+
+}
+
+void makeEffPlotsCMSSW(TString rootFile="totalMuFPGAAnalysis.root") {
+
+    efficiencyPlotCMSSW(rootFile,"Phi","mcEtaLess1","PhiEff_mcEtaLess1");
+    efficiencyPlotCMSSW(rootFile,"Eta","mcEtaLess1","EtaEff_mcEtaLess1");
+    efficiencyPlotCMSSW(rootFile,"Z0","mcEtaLess1","Z0Eff_mcEtaLess1");
+    efficiencyPlotCMSSW(rootFile,"Pt","mcEtaLess1","PtEff_mcEtaLess1");
+
+    efficiencyPlotCMSSW(rootFile,"Phi","mcEta1to1.7","PhiEff_mcEta1to1.7");
+    efficiencyPlotCMSSW(rootFile,"Eta","mcEta1to1.7","EtaEff_mcEta1to1.7");
+    efficiencyPlotCMSSW(rootFile,"Z0","mcEta1to1.7","Z0Eff_mcEta1to1.7");
+    efficiencyPlotCMSSW(rootFile,"Pt","mcEta1to1.7","PtEff_mcEta1to1.7");
+
+    efficiencyPlotCMSSW(rootFile,"Phi","mcEtaMore1.7","PhiEff_mcEtaMore1.7");
+    efficiencyPlotCMSSW(rootFile,"Eta","mcEtaMore1.7","EtaEff_mcEtaMore1.7");
+    efficiencyPlotCMSSW(rootFile,"Z0","mcEtaMore1.7","Z0Eff_mcEtaMore1.7");
+    efficiencyPlotCMSSW(rootFile,"Pt","mcEtaMore1.7","PtEff_mcEtaMore1.7");
+
+    efficiencyPlotCMSSW(rootFile,"Phi","total","PhiEff_total");
+    efficiencyPlotCMSSW(rootFile,"Eta","total","EtaEff_total");
+    efficiencyPlotCMSSW(rootFile,"Z0","total","Z0Eff_total");
+    efficiencyPlotCMSSW(rootFile,"Pt","total","PtEff_total");
+
+}
