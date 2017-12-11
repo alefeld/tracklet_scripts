@@ -98,7 +98,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_mcTrkEta_tot = new TH1F("h_mcTrkEta_tot","mc trk Eta",100,-5.,5.);
   TH1F* h_mcType_tot   = new TH1F("h_mcType_tot",  "mc type",801,-400.5,400.5);
 
-  TH1F* h_trkPtWODup_tot   = new TH1F("h_trkPtWODup_tot","trk pt",200,0,25.);
+  TH1F* h_trkPtWODup_tot   = new TH1F("h_trkPtWODup_tot","trk pt",100,0.,25.);
   TH1F* h_trkPtWODup_low_tot   = new TH1F("h_trkPtWODup_low_tot","trk pt",50,0.,10.);
   TH1F* h_trkPhiWODup_tot  = new TH1F("h_trkPhiWODup_tot","trk (global) phi",100,0.,TMath::TwoPi());
   TH1F* h_trkEtaWODup_tot  = new TH1F("h_trkEtaWODup_tot","trk eta",100,-4.,4.);
@@ -127,30 +127,30 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_chisq_beforePD    = new TH1F("h_chisq_beforePD","chisq of tracks",100,0,7);
     
   //For Single Muons
-  TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",15,0.5,15.5);
-  TH1F* h_nTrkEvt_tot      = new TH1F("h_nTrkEvt_tot","Num Tracks per Event",15,0.5,15.5);
-  TH1F* h_nTrkEvtWODup_tot = new TH1F("h_nTrkEvtWODup_tot","Num Tracks per Event after duplicate removal",10,0.5,10.5);
-  TH1F* h_nDupTrk_tot      = new TH1F("h_nDupTrk_tot","Num of duplicates removed",10,0.5,10.5);
-  TH1F* h_nMCTrkSec_tot    = new TH1F("h_nMCTrkSec_tot","Num MC Tracks per Sector",15,0.5,15.5);
-  TH1F* h_nTrkSec_tot      = new TH1F("h_nTrkSec_tot","Num Tracks per Sector",15,0.5,15.5);
-  TH1F* h_nTrkSecTail_tot  = new TH1F("h_nTrkSecTail_tot","Num Tracks per Sector",15,15.5,30.5);
-  TH1F* h_nTrkSecWODup_tot = new TH1F("h_nTrkSecWODup_tot","Num Tracks per Sector (after dup)",15,0.5,15.5);
-  TH1F* h_nTrkSecWODupTail_tot = new TH1F("h_nTrkSecWODupTail_tot","Num Tracks per Sector (after dup)",15,15.5,30.5);
-  TH2F* h_NDupVSNTrkWO_tot = new TH2F("h_NDupVSNTrkWO_tot","Num Dup vs Num Trk (after)",10,0.5,10.5,10,0.5,10.5);
+//  TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",15,0.5,15.5);
+//  TH1F* h_nTrkEvt_tot      = new TH1F("h_nTrkEvt_tot","Num Tracks per Event",15,0.5,15.5);
+//  TH1F* h_nTrkEvtWODup_tot = new TH1F("h_nTrkEvtWODup_tot","Num Tracks per Event after duplicate removal",10,0.5,10.5);
+//  TH1F* h_nDupTrk_tot      = new TH1F("h_nDupTrk_tot","Num of duplicates removed",10,0.5,10.5);
+//  TH1F* h_nMCTrkSec_tot    = new TH1F("h_nMCTrkSec_tot","Num MC Tracks per Sector",15,0.5,15.5);
+//  TH1F* h_nTrkSec_tot      = new TH1F("h_nTrkSec_tot","Num Tracks per Sector",15,0.5,15.5);
+//  TH1F* h_nTrkSecTail_tot  = new TH1F("h_nTrkSecTail_tot","Num Tracks per Sector",15,15.5,30.5);
+//  TH1F* h_nTrkSecWODup_tot = new TH1F("h_nTrkSecWODup_tot","Num Tracks per Sector (after dup)",15,0.5,15.5);
+//  TH1F* h_nTrkSecWODupTail_tot = new TH1F("h_nTrkSecWODupTail_tot","Num Tracks per Sector (after dup)",15,15.5,30.5);
+//  TH2F* h_NDupVSNTrkWO_tot = new TH2F("h_NDupVSNTrkWO_tot","Num Dup vs Num Trk (after)",10,0.5,10.5,10,0.5,10.5);
     
-  /*
+
   //For ttbar
-  TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",51,-0.5,50.5);
-  TH1F* h_nTrkEvt_tot      = new TH1F("h_nTrkEvt_tot","Num Tracks per Event",51,-0.5,50.5);
-  TH1F* h_nTrkEvtWODup_tot = new TH1F("h_nTrkEvtWODup_tot","Num Tracks per Event after duplicate removal",51,-0.5,50.5);
-  TH1F* h_nDupTrk_tot      = new TH1F("h_nDupTrk_tot","Num of duplicates removed",51,-0.5,50.5);
+  TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",51,-0.5,200.5);
+  TH1F* h_nTrkEvt_tot      = new TH1F("h_nTrkEvt_tot","Num Tracks per Event",51,-0.5,400.5);
+  TH1F* h_nTrkEvtWODup_tot = new TH1F("h_nTrkEvtWODup_tot","Num Tracks per Event after duplicate removal",51,-0.5,300.5);
+  TH1F* h_nDupTrk_tot      = new TH1F("h_nDupTrk_tot","Num of duplicates removed",51,-0.5,200.5);
   TH1F* h_nMCTrkSec_tot    = new TH1F("h_nMCTrkSec_tot","Num MC Tracks per Sector",51,-0.5,50.5);
   TH1F* h_nTrkSec_tot      = new TH1F("h_nTrkSec_tot","Num Tracks per Sector",51,-0.5,50.5);
   TH1F* h_nTrkSecTail_tot  = new TH1F("h_nTrkSecTail_tot","Num Tracks per Sector",51,49.5,100.5);
   TH1F* h_nTrkSecWODup_tot = new TH1F("h_nTrkSecWODup_tot","Num Tracks per Sector (after dup)",51,-0.5,50.5);
   TH1F* h_nTrkSecWODupTail_tot = new TH1F("h_nTrkSecWODupTail_tot","Num Tracks per Sector (after dup)",51,49.5,100.5);
   TH2F* h_NDupVSNTrkWO_tot = new TH2F("h_NDupVSNTrkWO_tot","Num Dup vs Num Trk (after)",10,0.5,10.5,10,0.5,10.5);
-  */
+
 
   TH1F* h_nStub = new TH1F("h_nStub","nStub per Event",31,-0.5,30.5);
   TH1F* h_nStubTrk     = new TH1F("h_nStubTrk","Num Stubs per Track",9,-0.5,8.5);
@@ -168,7 +168,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH2F* h_matchDeltaPhi_chi2_AllM   = new TH2F("h_matchDeltaPhi_chi2_AllM","fpga-mc delta phi v. chi2",40,-0.003,0.003,40,0,20);
   TH2F* h_matchDeltaEta_chi2_AllM   = new TH2F("h_matchDeltaEta_chi2_AllM","fpga-mc delta eta v. chi2",40,-0.025,0.025,40,0,20);
   TH2F* h_matchDeltaR_chi2_AllM     = new TH2F("h_matchDeltaR_chi2_AllM"  ,"fpga-mc delta R v. chi2"  ,40,0.,0.025,40,0,20);
-  TH2F* h_matchDeltaZ0_chi2_AllM    = new TH2F("h_matchDeltaZ0_chi2_AllM"  ,"fpga-mc delta Z0 v. chi2"  ,40,-10,10,40,0,20);
+  TH2F* h_matchDeltaZ0_chi2_AllM    = new TH2F("h_matchDeltaZ0_chi2_AllM"  ,"fpga-mc delta Z0 v. chi2"  ,40,-1.5,1.5,40,0,20);
   TH2F* h_matchDeltaPtOPt_chi2_AllM = new TH2F("h_matchDeltaPtOPt_chi2_AllM" ,"fpga-mc (delta Pt)/Pt v. chi2" ,40,-0.1,0.1,40,0,20);
 
   TH1F* h_matchDeltaPhi_chi2_0to1   = new TH1F("h_matchDeltaPhi_chi2_0to1","fpga-mc delta phi v. chi2",40,-0.003,0.003);
@@ -419,9 +419,9 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
     if(nTrkWODup_tot>0) {
 
       //total plots
-      h_nTrkEvt_tot->Fill(TMath::Min(nTrkWODup_tot+nDupTrk_tot,99));
-      h_nTrkEvtWODup_tot->Fill(TMath::Min(nTrkWODup_tot,99));
-      h_nDupTrk_tot->Fill(TMath::Min(nDupTrk_tot,99));
+      h_nTrkEvt_tot->Fill(nTrkWODup_tot+nDupTrk_tot);
+      h_nTrkEvtWODup_tot->Fill(nTrkWODup_tot);
+      h_nDupTrk_tot->Fill(nDupTrk_tot);
       h_NDupVSNTrkWO_tot->Fill(nTrkWODup_tot,nDupTrk_tot);
 
       h_L1L2Multi->Fill(nILTkt[1]);
@@ -534,10 +534,10 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 
       //apply some track requirement
       if(abs(mcTrack.pt_)>Minpt && abs(mcTrack.pt_)<Maxpt
-//         && sqrt(mcTrack.vy_*mcTrack.vy_ + mcTrack.vx_*mcTrack.vx_)<0.1  
-//         && checkType(mcTrack.type_,true)
-//         && fabs(mcTrack.eta_)<2.5
-//         && fabs(mcTrack.vz_)<20
+         && sqrt(mcTrack.vy_*mcTrack.vy_ + mcTrack.vx_*mcTrack.vx_)<0.1  
+         && checkType(mcTrack.type_,true)
+         && fabs(mcTrack.eta_)<2.5
+         && fabs(mcTrack.vz_)<20
          ) {
 
         //if(!checkType(mcTrack.type_,false)) printf("Type neither good nor bad %i\n",mcTrack.type_);
