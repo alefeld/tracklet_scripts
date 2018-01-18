@@ -98,6 +98,12 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_mcTrkEta_tot = new TH1F("h_mcTrkEta_tot","mc trk Eta",100,-5.,5.);
   TH1F* h_mcType_tot   = new TH1F("h_mcType_tot",  "mc type",801,-400.5,400.5);
 
+  TH1F* h_trkPt_tot   = new TH1F("h_trkPt_tot","trk pt",100,0.,25.);
+  TH1F* h_trkPt_low_tot   = new TH1F("h_trkPt_low_tot","trk pt",50,0.,10.);
+  TH1F* h_trkPhi_tot  = new TH1F("h_trkPhi_tot","trk (global) phi",100,0.,TMath::TwoPi());
+  TH1F* h_trkEta_tot  = new TH1F("h_trkEta_tot","trk eta",100,-4.,4.);
+  TH1F* h_trkZ0_tot   = new TH1F("h_trkZ0_tot","trk z0",200,-50.,50.);
+
   TH1F* h_trkPtWODup_tot   = new TH1F("h_trkPtWODup_tot","trk pt",100,0.,25.);
   TH1F* h_trkPtWODup_low_tot   = new TH1F("h_trkPtWODup_low_tot","trk pt",50,0.,10.);
   TH1F* h_trkPhiWODup_tot  = new TH1F("h_trkPhiWODup_tot","trk (global) phi",100,0.,TMath::TwoPi());
@@ -393,6 +399,12 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 //          printf("\n");
 //          printf("dup   = %i\n \n", track.duplicate_);
 //		      printf("chisq   = %f\n \n", track.chisq_);
+
+        h_trkPt_tot->Fill(abs(track.pt_));
+        h_trkPt_low_tot->Fill(abs(track.pt_));
+        h_trkPhi_tot->Fill(track.phi0_);
+        h_trkEta_tot->Fill(track.eta_);
+        h_trkZ0_tot->Fill(track.z0_);
 
         if(track.duplicate_) {
           nDupTrk_tot++;
