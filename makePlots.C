@@ -105,7 +105,8 @@ void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString ro
 
     // Draw histograms
     THStack* hs = new THStack("hs",hname1+" & "+hname2);
-        hs->SetTitle(hname1+" & "+hname2);
+        if(outputname=="") hs->SetTitle(hname1+" & "+hname2);
+        else hs->SetTitle(outputname);
 
         hs->Add(h1,"s");
         hs->Add(h2,"s");
@@ -193,7 +194,7 @@ void makeDoubleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString ro
     } else {
         c->Print(outputdir+outputname+".png","png");
     }
-//    c->Close();
+    c->Close();
 
 }
 
@@ -386,33 +387,41 @@ void make2DHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname="
 
 }
 
-void makeTripleHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecMC_tot", TString region="total", TString outputname="0") {
+void makeTripleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString rootFileName3="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecMC_tot", TString dirName="", TString outputname="") {
 
     // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("FPGAAnalysis.root","");
-    TString outputdir = "Plots/" + rootFileName + "/";
-    TDirectory *d;
-    if(region=="total") {
-        d = (TDirectory*)rootFile->GetDirectory("");
-    } else {
-        d = (TDirectory*)rootFile->GetDirectory(region);
-    }
+    TFile *rootFile1 = new TFile(rootFileName1);
+    TFile *rootFile2 = new TFile(rootFileName2);
+    TFile *rootFile3 = new TFile(rootFileName3);
+    TString outputdir = "Plots/";
+    TDirectory *d1, *d2, *d3;
+    d1 = (TDirectory*)rootFile1->GetDirectory(dirName);
+    d2 = (TDirectory*)rootFile2->GetDirectory(dirName);
+    d3 = (TDirectory*)rootFile3->GetDirectory(dirName);
 
     TCanvas* c = new TCanvas("c_comb_"+hname1);
 
     // Get histograms
-    TH1F* h1 = (TH1F*)d->Get(hname1);
+    TH1F* h1 = (TH1F*)d1->Get(hname1);
         h1->SetLineColor(kBlack);
         h1->SetLineWidth(3);
+        h1->SetMarkerColor(kBlack);
+        h1->SetMarkerStyle(20);
+        h1->SetMarkerSize(1);
 
-    TH1F* h2 = (TH1F*)d->Get(hname2);
+    TH1F* h2 = (TH1F*)d2->Get(hname2);
         h2->SetLineColor(kRed);
         h2->SetLineWidth(3);
+        h2->SetMarkerColor(kRed);
+        h2->SetMarkerStyle(20);
+        h2->SetMarkerSize(0.75);
 
-    TH1F* h3 = (TH1F*)d->Get(hname3);
+    TH1F* h3 = (TH1F*)d3->Get(hname3);
         h3->SetLineColor(kYellow+1);
         h3->SetLineWidth(3);
+        h3->SetMarkerColor(kYellow+1);
+        h3->SetMarkerStyle(20);
+        h3->SetMarkerSize(0.5);
 
     // Setup the superimposed histograms pad
     TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
@@ -421,8 +430,8 @@ void makeTripleHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hna
         p1->cd();
 
     // Draw histograms
-    THStack* hs = new THStack("hs",hname1+" & "+hname2+" & "+hname3);
-        hs->SetTitle(hname1+" & "+hname2+" & "+hname3);
+    THStack* hs = new THStack("hs","");
+//        hs->SetTitle(hname1+" & "+hname2+" & "+hname3);
         hs->SetMinimum(0);
         hs->Add(h1,"s");
         hs->Add(h2,"s");
@@ -430,34 +439,34 @@ void makeTripleHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hna
         hs->Draw("nostack");
 
     // Make stat boxes
-    p1->Update();
-    TPaveStats* st1 = (TPaveStats*)h1->FindObject("stats");
-        st1->SetOptStat(110111);
-        st1->SetX1NDC(0.8);
-        st1->SetX2NDC(0.99);
-        st1->SetY1NDC(0.8);
-        st1->SetY2NDC(1.0);
-        st1->SetTextColor(h1->GetLineColor());
-    TPaveStats* st2 = (TPaveStats*)h2->FindObject("stats");
-        st2->SetOptStat(110111);
-        st2->SetX1NDC(0.8);
-        st2->SetX2NDC(0.99);
-        st2->SetY1NDC(0.6);
-        st2->SetY2NDC(0.8);
-        st2->SetTextColor(h2->GetLineColor());
-    TPaveStats* st3 = (TPaveStats*)h3->FindObject("stats");
-        st3->SetOptStat(110111);
-        st3->SetX1NDC(0.8);
-        st3->SetX2NDC(0.99);
-        st3->SetY1NDC(0.4);
-        st3->SetY2NDC(0.6);
-        st3->SetTextColor(h3->GetLineColor());
+//    p1->Update();
+//    TPaveStats* st1 = (TPaveStats*)h1->FindObject("stats");
+//        st1->SetOptStat(110111);
+//        st1->SetX1NDC(0.8);
+//        st1->SetX2NDC(0.99);
+//        st1->SetY1NDC(0.8);
+//        st1->SetY2NDC(1.0);
+//        st1->SetTextColor(h1->GetLineColor());
+//    TPaveStats* st2 = (TPaveStats*)h2->FindObject("stats");
+//        st2->SetOptStat(110111);
+//        st2->SetX1NDC(0.8);
+//        st2->SetX2NDC(0.99);
+//        st2->SetY1NDC(0.6);
+//        st2->SetY2NDC(0.8);
+//        st2->SetTextColor(h2->GetLineColor());
+//    TPaveStats* st3 = (TPaveStats*)h3->FindObject("stats");
+//        st3->SetOptStat(110111);
+//        st3->SetX1NDC(0.8);
+//        st3->SetX2NDC(0.99);
+//        st3->SetY1NDC(0.4);
+//        st3->SetY2NDC(0.6);
+//        st3->SetTextColor(h3->GetLineColor());
 
     p1->Update();
 
     // Save and close
-    if(outputname=="0") {
-        c->Print(outputdir+"comb_"+hname1+"_"+region+".png","png");
+    if(outputname=="") {
+        c->Print(outputdir+"comb_"+hname1+".png","png");
     } else {
         c->Print(outputdir+outputname+".png","png");
     }
@@ -1152,7 +1161,7 @@ void makeTripleHistSpecial(TString rootFileName1="totalMuFPGAAnalysis.root", TSt
 
 }
 
-void makeTDRPlot(TString rootFileName1="mu_40000_2to10_adj_analyze.root", TString rootFileName2="mu_40000_2to10_ss_analyze.root", TString rootFileName3="mu_40000_2to10_adj_analyze.root", TString hname1="h_nTrkEvt_tot", TString hname2="h_nTrkEvtWODup_tot", TString hname3="h_nTrkEvtWODup_tot", TString outputname="DuplicateRemovalComparison2-10GeVMuons") {
+void makeTDRPlot(TString rootFileName1="Mu10_ss_ana.root", TString rootFileName2="Mu10_ss_ana.root", TString rootFileName3="Mu10_adj_ana.root", TString hname1="h_nTrkEvt_tot", TString hname2="h_nTrkEvtWODup_tot", TString hname3="h_nTrkEvtWODup_tot", TString outputname="DuplicateRemovalComparison2-10GeVMuons") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile1 = new TFile(rootFileName1);

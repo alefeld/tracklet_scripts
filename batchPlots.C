@@ -61,14 +61,31 @@ void makeTriplePlots() {
 
 }
 
-void makeChisqPlots(TString rootFile1="mu_standalone_Ana.root",TString rootFile2="mu_CMSSW_Ana.root") {
+void feb20Plots(TString rootFile1="ttbar_newtune_ana.root") {
+  make2DHist(rootFile1, "h_chisq_ichisq", "", "chisq_correlation");
+  makeSingleHist(rootFile1, "h_ichisq_beforePD", "", "ichisq_beforePD");
+  makeSingleHist(rootFile1, "h_ichisq_afterPD", "", "ichisq_afterPD");
+  makeSingleHist(rootFile1, "h_chisq_beforePD", "", "chisq_beforePD");
+  makeSingleHist(rootFile1, "h_chisq_afterPD", "", "chisq_afterPD");
 
-  makeSingleHist(rootFile1, "h_chisq_afterPD", "h_chisq_standalone", false);
-  makeSingleHist(rootFile2, "h_chisq", "h_chisq_CMSSW", false);
+}
+
+void makeChisqComparePlots(TString rootFile1="mu_standalone_Ana.root",TString rootFile2="mu_CMSSW_Ana.root") {
+
+  makeSingleHist(rootFile1, "h_chisq_afterPD", "", "h_chisq_standalone", false);
+  makeSingleHist(rootFile2, "h_chisq", "", "h_chisq_CMSSW", false);
   makeDoubleHist(rootFile1, rootFile2, "h_chisq_afterPD", "h_chisq", "h_chisq_compare", false);
-  makeSingleHist(rootFile1, "h_chisq_afterPD", "h_chisq_standalone_log", true);
-  makeSingleHist(rootFile2, "h_chisq", "h_chisq_CMSSW_log", true);
+  makeSingleHist(rootFile1, "h_chisq_afterPD", "", "h_chisq_standalone_log", true);
+  makeSingleHist(rootFile2, "h_chisq", "", "h_chisq_CMSSW_log", true);
   makeDoubleHist(rootFile1, rootFile2, "h_chisq_afterPD", "h_chisq", "h_chisq_compare_log", true);
+
+}
+
+void makeEtaAsym() {
+
+  makeSingleHist("ana_ttbar_ichi.root","h_trkEta_tot","","trkEta_before");
+  makeSingleHist("ana_ttbar_ichi.root","h_trkEtaWODup_tot","","trkEta_ichi_after");
+  makeSingleHist("ana_ttbar_grid.root","h_trkEtaWODup_tot","","trkEta_grid_after");
 
 }
 
@@ -338,4 +355,36 @@ void DoubleDecemberPlots() {
   makeDoubleHist("ttbar140_all_fixed_ana.root","ttbar140_all_old_ana.root","h_trkPhiWODup_tot","h_trkPhiWODup_tot","all_double/h_trkPhiWODup",false,true);
   makeDoubleHist("ttbar140_all_fixed_ana.root","ttbar140_all_old_ana.root","h_trkEtaWODup_tot","h_trkEtaWODup_tot","all_double/h_trkEtaWODup",false,true);
 
+}
+
+void StandardMuPlots() {
+  makeDoubleHist("ana_MuMinus_ichi_adj.root","ana_MuMinus_ichi_adj.root","h_nTrkEvt_tot","h_nTrkEvtWODup_tot","Mu10 PD Performance",true,true);
+  makeSingleHist("ana_MuMinus_ichi_adj.root","h_nDupTrk_tot","","nDupTrack");
+  makeSingleHist("ana_MuMinus_ichi_adj.root","h_nMCTrkEvt_tot","","nMCTrk");
+  makeDoubleHist("ana_MuMinus_ichi_adj.root","ana_MuMinus_ichi_adj.root","h_ichisq_beforePD","h_ichisq_afterPD","iChisquare Before&After",false,true);
+}
+
+void StandardMuPlotsMCpt() {
+  makeDoubleHist("myTest_2to3_ana.root","myTest_2to3_ana.root","h_nTrkEvt_tot","h_nTrkEvtWODup_tot","Mu10_PD_Performance_2to3",true,true);
+  makeDoubleHist("myTest_9to10_ana.root","myTest_9to10_ana.root","h_nTrkEvt_tot","h_nTrkEvtWODup_tot","Mu10_PD_Performance_9to10",true,true);
+}
+
+void StandardTTbarPlots() {
+  makeTripleHist("output_ttbar_D17_PU200_noPD_300.root", "output_ttbar_D17_PU200_nstubPD_300.root", "output_ttbar_D17_PU200_condensed_300.root", "eff_eta", "eff_eta", "eff_eta", "", "ttbar_efficiencies");
+  makeTripleHist("output_ttbar_D17_PU200_condensed.root", "output_ttbar_D17_PU200_truncate.root", "output_ttbar_D17_PU200_extreme.root", "eff_eta", "eff_eta", "eff_eta", "", "ttbar_ichi_compare");
+}
+
+void GridPlots() {
+  make2DHist("ana_MuMinus_grid_adj.root","h_gridMapBig_manyTracks_0","","Mu10_gridMapBig_evt0");
+  make2DHist("ana_MuMinus_grid_adj.root","h_gridMapBig_manyTracks_1","","Mu10_gridMapBig_evt1");
+  make2DHist("ana_MuMinus_grid_adj.root","h_gridMapBig_manyTracks_2","","Mu10_gridMapBig_evt2");
+  make2DHist("ana_MuMinus_grid_adj.root","h_gridMapBig_manyTracks_3","","Mu10_gridMapBig_evt3");
+  make2DHist("ana_MuMinus_grid_adj.root","h_gridMapBig_manyTracks_4","","Mu10_gridMapBig_evt4");
+  make2DHist("ana_MuMinus_grid_adj.root","h_gridMapBig_manyTracks_5","","Mu10_gridMapBig_evt5");
+
+  make2DHist("ana_ttbar_grid_adj.root","h_gridMap","","ttbar_gridMapSmall");
+  make2DHist("ana_ttbar_grid_adj.root","h_gridMapBig","","ttbar_gridMapBig");
+  make2DHist("ana_ttbar_grid_adj.root","h_gridMapBigWODup","","ttbar_gridMapBigWODup");
+  make2DHist("ana_ttbar_grid_adj.root","h_gridMapGlobal_manyTracks_0","","ttbar_gridMapGlobal");
+  make2DHist("ana_ttbar_grid_adj.root","h_gridMapGlobalWODup_manyTracks_0","","ttbar_gridMapGlobalWODup");
 }

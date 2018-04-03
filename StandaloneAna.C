@@ -69,7 +69,7 @@ void loadFPGATree(TString fileName = "myTest.root") {
 
 void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest.root") {
 
-  const bool stubsTxtFile = false;
+  const bool stubsTxtFile = true;
   const double Maxpt = 200.0;
   const double Minpt = 0.0;
 
@@ -129,8 +129,21 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_nTrkSec_eta3      = new TH1F("h_nTrkSec_eta3","Num Tracks per Sector",26,-0.5,25.5);
   TH1F* h_nTrkSec_eta4      = new TH1F("h_nTrkSec_eta4","Num Tracks per Sector",26,-0.5,25.5);
 
-  TH1F* h_chisq_afterPD     = new TH1F("h_chisq_afterPD","chisq of tracks",100,0,7);
+  TH2F* h_chisq_ichisq    = new TH2F("h_chisq_ichisq","ichisq of tracks",100,0,50,256,0,1000);
+  TH2F* h_chisqDiff       = new TH2F("h_chisqDiff","ichisq vs. diff",100,0,1000,100,0,1000);
+  TH2F* h_chisqDiff16     = new TH2F("h_chisqDiff16","ichisq/16 vs. diff",100,-50,50,100,0,50);
   TH1F* h_chisq_beforePD    = new TH1F("h_chisq_beforePD","chisq of tracks",100,0,7);
+  TH1F* h_chisq_afterPD     = new TH1F("h_chisq_afterPD","chisq of tracks",100,0,7);
+  TH1F* h_ichisq_beforePD    = new TH1F("h_ichisq_beforePD","ichisq of tracks",256,0,1023);
+  TH1F* h_ichisq_afterPD     = new TH1F("h_ichisq_afterPD","ichisq of tracks",256,0,1023);
+
+  TH2F* h_gridMapPlus = new TH2F("h_gridMapPlus","Track location (+ eta)",40,-0.5,39,35,-0.5,34.5);
+  TH2F* h_gridMapPlusWODup = new TH2F("h_gridMapPlusWODup","Track location (+ eta) noDup",40,-0.5,39,35,-0.5,34.5);
+  TH2F* h_gridMapMinus = new TH2F("h_gridMapMinus","Track location (- eta)",40,-0.5,39,35,-0.5,34.5);
+  TH2F* h_gridMapMinusWODup = new TH2F("h_gridMapMinusWODup","Track location (- eta) noDup",40,-0.5,39,35,-0.5,34.5);
+
+  TH2F* h_gridMap = new TH2F("h_gridMap","Track location in parameter space",40,-0.5,39,35,-0.5,34.5);
+  TH2F* h_gridMapWODup = new TH2F("h_gridMapWODup","Track location in parameter space (no duplicates)",40,-0.5,39,35,-0.5,34.5);
     
   //For Single Muons
 //  TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",15,0.5,15.5);
@@ -141,15 +154,15 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
 //  TH1F* h_nTrkSec_tot      = new TH1F("h_nTrkSec_tot","Num Tracks per Sector",15,0.5,15.5);
 //  TH1F* h_nTrkSecTail_tot  = new TH1F("h_nTrkSecTail_tot","Num Tracks per Sector",15,15.5,30.5);
 //  TH1F* h_nTrkSecWODup_tot = new TH1F("h_nTrkSecWODup_tot","Num Tracks per Sector (after dup)",15,0.5,15.5);
-//  TH1F* h_nTrkSecWODupTail_tot = new TH1F("h_nTrkSecWODupTail_tot","Num Tracks per Sector (after dup)",15,15.5,30.5);
+//  TH1F* h_nTrkSecWODupTail_tot = new TH1F("h_nTrkSecWODupTail_tot","Num Tracks per Sector (after dup)",15,15.5,30.5); 
 //  TH2F* h_NDupVSNTrkWO_tot = new TH2F("h_NDupVSNTrkWO_tot","Num Dup vs Num Trk (after)",10,0.5,10.5,10,0.5,10.5);
     
 
   //For ttbar
   TH1F* h_nMCTrkEvt_tot    = new TH1F("h_nMCTrkEvt_tot","Num MC Tracks per Event",51,-0.5,200.5);
-  TH1F* h_nTrkEvt_tot      = new TH1F("h_nTrkEvt_tot","Num Tracks per Event",51,-0.5,400.5);
-  TH1F* h_nTrkEvtWODup_tot = new TH1F("h_nTrkEvtWODup_tot","Num Tracks per Event after duplicate removal",51,-0.5,300.5);
-  TH1F* h_nDupTrk_tot      = new TH1F("h_nDupTrk_tot","Num of duplicates removed",51,-0.5,200.5);
+  TH1F* h_nTrkEvt_tot      = new TH1F("h_nTrkEvt_tot","Num Tracks per Event",160,-0.5,800.5);
+  TH1F* h_nTrkEvtWODup_tot = new TH1F("h_nTrkEvtWODup_tot","Num Tracks per Event after duplicate removal",80,-0.5,400.5);
+  TH1F* h_nDupTrk_tot      = new TH1F("h_nDupTrk_tot","Num of duplicates removed",80,-0.5,400.5);
   TH1F* h_nMCTrkSec_tot    = new TH1F("h_nMCTrkSec_tot","Num MC Tracks per Sector",51,-0.5,50.5);
   TH1F* h_nTrkSec_tot      = new TH1F("h_nTrkSec_tot","Num Tracks per Sector",51,-0.5,50.5);
   TH1F* h_nTrkSecTail_tot  = new TH1F("h_nTrkSecTail_tot","Num Tracks per Sector",51,49.5,100.5);
@@ -157,6 +170,10 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
   TH1F* h_nTrkSecWODupTail_tot = new TH1F("h_nTrkSecWODupTail_tot","Num Tracks per Sector (after dup)",51,49.5,100.5);
   TH2F* h_NDupVSNTrkWO_tot = new TH2F("h_NDupVSNTrkWO_tot","Num Dup vs Num Trk (after)",10,0.5,10.5,10,0.5,10.5);
 
+  TH1F* h_StubID_presel = new TH1F("h_StubID_presel","StubID distribution eta",150,-100,250);
+  TH1F* h_StubID_tot = new TH1F("h_StubID_tot","StubID distribution eta",150,-100,250);
+  TH1F* h_StubID_plus = new TH1F("h_StubID_plus","StubID distribution eta>1.4",150,-100,250);
+  TH1F* h_StubID_minus = new TH1F("h_StubID_minus","StubID distribution eta<-1.4",150,-100,250);
 
   TH1F* h_nStub = new TH1F("h_nStub","nStub per Event",31,-0.5,30.5);
   TH1F* h_nStubTrk     = new TH1F("h_nStubTrk","Num Stubs per Track",9,-0.5,8.5);
@@ -307,10 +324,33 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
     h_matchDeltaPtOPt_trklet_nS6[r] = new TH1F("h_matchDeltaPtOPt_nS6" ,"fpga-mc (delta Pt)/Pt (nstub=6)" ,100,-0.1,0.1);
   }
 
+  histFile->cd();
+
+  int nGridEvts=0;
+  TH2F* h_gridMap_manyTracks[10];
+  TH2F* h_gridMapBig_manyTracks[10];
+  TH2F* h_gridMapGlobal_manyTracks[10];
+  TH2F* h_gridMapGlobalWODup_manyTracks[10];
+  for(int g=0; g<10; g++) {
+    TString name = Form("h_gridMap_manyTracks_%i",g);
+    TString nameBig = Form("h_gridMapBig_manyTracks_%i",g);
+    TString nameGlobal = Form("h_gridMapGlobal_manyTracks_%i",g);
+    TString nameGlobalWODup = Form("h_gridMapGlobalWODup_manyTracks_%i",g);
+    h_gridMap_manyTracks[g] = new TH2F(name, "Grid map (many tracks)",40,-0.5,39,19,-0.5,18.5);
+    h_gridMapBig_manyTracks[g] = new TH2F(nameBig, "Grid map (many tracks)",40,-0.5,39,35,-0.5,34.5);
+    h_gridMapGlobal_manyTracks[g] = new TH2F(nameGlobal, "Grid map (many tracks)",450,-0.5,449.5,40,-0.5,39);
+    h_gridMapGlobalWODup_manyTracks[g] = new TH2F(nameGlobalWODup, "Grid map (many tracks)",450,-0.5,449.5,40,-0.5,39);
+  }
+
+
+
   // Loop over events
   for(int i=0; i<numEvts; i++) {
 //    cout << "Analyzing event  " << i << "..." << endl;
     fpgaTree->GetEntry(i);
+
+//    if((fpgaEvent->mcTracks[0].pt_ < 2) || (fpgaEvent->mcTracks[0].pt_ > 3)) continue;
+//    if((fpgaEvent->mcTracks[0].pt_ < 9) || (fpgaEvent->mcTracks[0].pt_ > 10)) continue;
 
     // Initialize map to count stubs
     std::map<int,int> nStubEvt;
@@ -361,6 +401,72 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
     nILTkt[-11] = 0; nILTkt[-13] = 0; nILTkt[11] = 0; nILTkt[13] = 0;
     nILTkt[-21] = 0; nILTkt[21] = 0;
 
+    int asymGrid[40][450]={{0}};
+    // Asymmetry investigations
+    for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++){
+          // Correct phi domain to 0 < phi < 2*PI for global map  
+          double phiGlobal;
+          if(track.phi0_ < 0) {
+            phiGlobal = 2*M_PI+track.phi0_;
+          } else if(track.phi0_ > 2*M_PI) {
+            phiGlobal = track.phi0_-2*M_PI;
+          } else phiGlobal = track.phi0_;
+          double phiBinGlobal = phiGlobal/(2*M_PI/9/50);
+
+          double ptBin = 1/track.pt_*40+20;
+          ptBin = std::max(ptBin,0.);
+          ptBin = std::min(ptBin,39.);
+
+          asymGrid[ptBin][phiBinGlobal]++;
+    }
+    for(int ptbin=0; ptbin<40; ptbin++) {
+      for(int phibin=0; phibin<450; phibin++) {
+        if(asymGrid[ptbin][phibin] >= 4) {
+          
+        }
+      }
+    }
+
+    // Plots for 10 events with large numbers of tracks
+    if(nGridEvts<10 && fpgaEvent->tracks.size()>=8) {
+      for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++){
+        FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
+  //      if(track.eta_ > 1.0) continue;
+        if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt) {
+
+          double phiBin = (track.phi0_-2*M_PI/27*track.sector_)/(2*M_PI/9/50) + 1;
+          phiBin = std::max(phiBin,0.);
+          phiBin = std::min(phiBin,18.);
+
+          double phiBinBig = (track.phi0_-2*M_PI/27*track.sector_)/(2*M_PI/9/50) + 9;
+          phiBin = std::max(phiBin,0.);
+          phiBin = std::min(phiBin,34.);
+
+          // Correct phi domain to 0 < phi < 2*PI for global map  
+          double phiGlobal;
+          if(track.phi0_ < 0) {
+            phiGlobal = 2*M_PI+track.phi0_;
+          } else if(track.phi0_ > 2*M_PI) {
+            phiGlobal = track.phi0_-2*M_PI;
+          } else phiGlobal = track.phi0_;
+          double phiBinGlobal = phiGlobal/(2*M_PI/9/50);
+
+          double ptBin = 1/track.pt_*40+20;
+          ptBin = std::max(ptBin,0.);
+          ptBin = std::min(ptBin,39.);
+
+          h_gridMap_manyTracks[nGridEvts]->Fill((int)ptBin,(int)phiBin);
+          h_gridMapBig_manyTracks[nGridEvts]->Fill((int)ptBin,(int)phiBinBig);
+          h_gridMapGlobal_manyTracks[nGridEvts]->Fill((int)phiBinGlobal,(int)ptBin);
+          if(!track.duplicate_) h_gridMapGlobalWODup_manyTracks[nGridEvts]->Fill((int)phiBinGlobal,(int)ptBin);
+
+        }
+      }
+      nGridEvts++;
+    }
+    int gridSector=28;
+
+    // Loop over tracks
     for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++){
       FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
       if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt) {
@@ -368,15 +474,63 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         nILTkt[track.seed_]++;
         h_iLTkt_tot->Fill(track.seed_);
 
+        h_chisq_ichisq->Fill(track.chisq_, track.ichisq_);
+        h_chisqDiff->Fill(track.ichisq_-track.chisq_, track.ichisq_);
+        h_chisqDiff16->Fill(track.ichisq_/16.0-track.chisq_, track.ichisq_/16.0);
         h_chisq_beforePD->Fill(track.chisq_);
+        h_ichisq_beforePD->Fill(track.ichisq_);
         h_nStubTrk->Fill(track.stubID_.size());
 
         nTrkSec_tot[track.sector_]++;
+
+        if(i==0) { //Only 1 event
+          if(gridSector==28) gridSector=track.sector_;
+//            if(track.sector_==gridSector) {
+
+          double phiBin = (track.phi0_-2*M_PI/27*track.sector_)/(2*M_PI/9/50) + 9;
+          phiBin = std::max(phiBin,0.);
+          phiBin = std::min(phiBin,34.);
+
+          double ptBin = 1/track.pt_*40+20;
+          ptBin = std::max(ptBin,0.);
+          ptBin = std::min(ptBin,39.);
+
+          h_gridMap->Fill((int)ptBin,(int)phiBin);
+          if(!track.duplicate_) h_gridMapWODup->Fill((int)ptBin,(int)phiBin);
+
+          if(track.eta_ > 0) h_gridMapPlus->Fill((int)ptBin,(int)phiBin);
+          if(track.eta_ > 0 && !track.duplicate_) h_gridMapPlusWODup->Fill((int)ptBin,(int)phiBin);
+          if(track.eta_ < 0) h_gridMapMinus->Fill((int)ptBin,(int)phiBin);
+          if(track.eta_ < 0 && !track.duplicate_) h_gridMapMinusWODup->Fill((int)ptBin,(int)phiBin);
+
+//          }
+        }
 
         if( track.eta_<=-1.0 ) nTrkSec_eta[track.sector_][0]++;
         if( track.eta_>-1.0 && track.eta_<=0) nTrkSec_eta[track.sector_][1]++;
         if( track.eta_<1.0 && track.eta_>0) nTrkSec_eta[track.sector_][2]++;
         if( track.eta_>=1.0 ) nTrkSec_eta[track.sector_][3]++;
+
+        // Plotting stubids
+//        std::map<int,std::vector<int>> Ids;
+//        for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
+//          bool exists=false;
+//          for(std::vector<int>::iterator eachid=Ids->find(st->second).begin(); eachid!=Ids->find(st->second).end(); eachid++) {
+//            if(eachid == st->second()) exists=true;
+//          }
+//          if(!exists) h_StubID_tot->Fill(st->second);
+//          Ids.insert(
+//        }
+        if( track.eta_ > 1.4 ) {
+          for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
+            h_StubID_plus->Fill(st->second);
+          }
+        }
+        if( track.eta_ < -1.4 ) {
+          for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
+            h_StubID_minus->Fill(st->second);
+          }
+        }
 
         // Catch 7-stub tracks
         if(track.stubID_.size()>6) {
@@ -422,6 +576,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
           h_trkZ0WODup_tot->Fill(track.z0_);
 
           h_chisq_afterPD->Fill(track.chisq_);
+          h_ichisq_afterPD->Fill(track.ichisq_);
 
         }//end duplicates loop
       }//end if nStub >= nStubs
@@ -477,7 +632,7 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         h_F1LMulti_ghost->Fill(nILTkt[21]);
         h_B1LMulti_ghost->Fill(nILTkt[-21]);
 
-        stubid << Form("Event %i:",i);
+        if(stubsTxtFile) stubid << Form("Event %i:",i);
         for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++) {
           FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
           if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !track.duplicate_) {
@@ -505,11 +660,12 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
         if(stubsTxtFile) {
           for(int ntrk=0; ntrk<(int)fpgaEvent->tracks.size(); ntrk++){
             FPGAEventTrack track = fpgaEvent->tracks.at(ntrk);
+            if(track.eta_ > -1.4) continue;
             if(track.stubID_.size() >= minStubs && abs(track.pt_)>Minpt && abs(track.pt_)<Maxpt && !track.duplicate_) {
               //Output stubids to .txt file
               int nShareGhost=0;
               stubid << Form("\nTrack %i: ",ntrk);
-              stubid << Form(" Phi=%f, Eta=%f, Z0=%f, Pt=%f, iLTkt=%i, Sector=%i", track.phi0_,track.eta_,track.z0_,abs(track.pt_),track.seed_,track.sector_);
+              stubid << Form(" Phi=%f, Eta=%f, Z0=%f, Pt=%f, iChisq=%d, iLTkt=%i, Sector=%i", track.phi0_,track.eta_,track.z0_,abs(track.pt_),track.ichisq_,track.seed_,track.sector_);
               stubid << Form("\n    Stub ids: ");
               for(std::map<int, int>::iterator  st=track.stubID_.begin(); st!=track.stubID_.end(); st++) {
                 stubid << Form("  %i,%i",st->first,st->second);
@@ -517,7 +673,8 @@ void analyzeEvent(TString histFileName="test.root", TString rootFileName="myTest
                   FPGAEventTrack track2 = fpgaEvent->tracks.at(ntrk2);
                   if(!track2.duplicate_ && track2.stubID_.size() >= minStubs && abs(track2.pt_)>Minpt && abs(track2.pt_)<Maxpt && ntrk!=ntrk2) {
                     if(track2.stubID_.find(st->first) != track2.stubID_.end()) {
-                      if(st->second == track2.stubID_[st->first] && st->second != 63) {
+                      if(st->second == track2.stubID_[st->first]) {
+//                      if(st->second == track2.stubID_[st->first] && st->second != 63) {
                         stubid << "*";
                         nShareGhost++;
                       }

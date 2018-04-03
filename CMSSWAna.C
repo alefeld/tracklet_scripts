@@ -64,14 +64,6 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
   vector<float>* matchtrk_chi2;
   vector<int>*   matchtrk_nstub;
 
-  // *L1 track* properties, for *all* tracking particles matched to a L1 track
-  vector<vector<float>>* allmatchtrk_pt;
-  vector<vector<float>>* allmatchtrk_eta;
-  vector<vector<float>>* allmatchtrk_phi;
-  vector<vector<float>>* allmatchtrk_z0;
-  vector<vector<float>>* allmatchtrk_chi2;
-  vector<vector<int>>*   allmatchtrk_nstub;
-
   // all L1 tracks
   vector<float>* trk_pt;
   vector<float>* trk_eta;
@@ -99,13 +91,6 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
   TBranch* b_matchtrk_chi2; 
   TBranch* b_matchtrk_nstub;
 
-  TBranch* b_allmatchtrk_pt;
-  TBranch* b_allmatchtrk_eta;
-  TBranch* b_allmatchtrk_phi;
-  TBranch* b_allmatchtrk_z0;
-  TBranch* b_allmatchtrk_chi2; 
-  TBranch* b_allmatchtrk_nstub;
-
   TBranch* b_trk_pt; 
   TBranch* b_trk_eta; 
   TBranch* b_trk_phi;
@@ -132,13 +117,6 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
   matchtrk_chi2  = 0; 
   matchtrk_nstub = 0;
 
-  allmatchtrk_pt  = 0;
-  allmatchtrk_eta = 0;
-  allmatchtrk_phi = 0;
-  allmatchtrk_z0  = 0;
-  allmatchtrk_chi2  = 0; 
-  allmatchtrk_nstub = 0;
-
   trk_pt = 0; 
   trk_eta = 0; 
   trk_phi = 0; 
@@ -164,13 +142,6 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
   cmsswTree->SetBranchAddress("matchtrk_z0",    &matchtrk_z0,    &b_matchtrk_z0);
   cmsswTree->SetBranchAddress("matchtrk_chi2",  &matchtrk_chi2,  &b_matchtrk_chi2);
   cmsswTree->SetBranchAddress("matchtrk_nstub", &matchtrk_nstub, &b_matchtrk_nstub);
-
-  cmsswTree->SetBranchAddress("allmatchtrk_pt",    &allmatchtrk_pt,    &b_allmatchtrk_pt);
-  cmsswTree->SetBranchAddress("allmatchtrk_eta",   &allmatchtrk_eta,   &b_allmatchtrk_eta);
-  cmsswTree->SetBranchAddress("allmatchtrk_phi",   &allmatchtrk_phi,   &b_allmatchtrk_phi);
-  cmsswTree->SetBranchAddress("allmatchtrk_z0",    &allmatchtrk_z0,    &b_allmatchtrk_z0);
-  cmsswTree->SetBranchAddress("allmatchtrk_chi2",  &allmatchtrk_chi2,  &b_allmatchtrk_chi2);
-  cmsswTree->SetBranchAddress("allmatchtrk_nstub", &allmatchtrk_nstub, &b_allmatchtrk_nstub);
 
   cmsswTree->SetBranchAddress("trk_pt",   &trk_pt,   &b_trk_pt);
   cmsswTree->SetBranchAddress("trk_eta",  &trk_eta,  &b_trk_eta);
@@ -215,40 +186,35 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
   TH1F* h_nTrkEvt      = new TH1F("h_nTrkEvt","Num Tracks per Event",51,-0.5,50.5);
   */
 
-  TH1F* h_allmatchDeltaPhi   = new TH1F("h_allmatchDeltaPhi_AllM","L1-tp delta phi",100,-0.003,0.003);
-  TH1F* h_allmatchDeltaEta   = new TH1F("h_allmatchDeltaEta_AllM","L1-tp delta eta",100,-0.025,0.025);
-  TH1F* h_allmatchDeltaZ0    = new TH1F("h_allmatchDeltaZ0_AllM"  ,"L1-tp delta Z0"  ,100,-2,2);
-  TH1F* h_allmatchDeltaPtOPt = new TH1F("h_allmatchDeltaPtOPt_AllM" ,"L1-tp (delta Pt)/Pt" ,100,-0.1,0.1);
-
   TH1F* h_bestmatchDeltaPhi   = new TH1F("h_bestmatchDeltaPhi","L1-tp delta phi",100,-0.003,0.003);
   TH1F* h_bestmatchDeltaEta   = new TH1F("h_bestmatchDeltaEta","L1-tp delta eta",100,-0.025,0.025);
   TH1F* h_bestmatchDeltaZ0    = new TH1F("h_bestmatchDeltaZ0"  ,"L1-tp delta Z0"  ,100,-2,2);
   TH1F* h_bestmatchDeltaPtOPt = new TH1F("h_bestmatchDeltaPtOPt" ,"L1-tp (delta Pt)/Pt" ,100,-0.1,0.1);
 
-  TH2F* h_allmatchDeltaPhi_chi2   = new TH2F("h_allmatchDeltaPhi_chi2_AllM","L1-tp delta phi v. chi2",100,-0.003,0.003,100,0,20);
-  TH2F* h_allmatchDeltaEta_chi2   = new TH2F("h_allmatchDeltaEta_chi2_AllM","L1-tp delta eta v. chi2",100,-0.025,0.025,100,0,20);
-  TH2F* h_allmatchDeltaZ0_chi2    = new TH2F("h_allmatchDeltaZ0_chi2_AllM"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2,100,0,20);
-  TH2F* h_allmatchDeltaPtOPt_chi2 = new TH2F("h_allmatchDeltaPtOPt_chi2_AllM" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1,100,0,20);
+  TH2F* h_bestmatchDeltaPhi_chi2   = new TH2F("h_bestmatchDeltaPhi_chi2_bestM","L1-tp delta phi v. chi2",100,-0.003,0.003,100,0,20);
+  TH2F* h_bestmatchDeltaEta_chi2   = new TH2F("h_bestmatchDeltaEta_chi2_bestM","L1-tp delta eta v. chi2",100,-0.025,0.025,100,0,20);
+  TH2F* h_bestmatchDeltaZ0_chi2    = new TH2F("h_bestmatchDeltaZ0_chi2_bestM"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2,100,0,20);
+  TH2F* h_bestmatchDeltaPtOPt_chi2 = new TH2F("h_bestmatchDeltaPtOPt_chi2_bestM" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1,100,0,20);
 
-  TH1F* h_allmatchDeltaPhi_chi2_0to1   = new TH1F("h_allmatchDeltaPhi_chi2_0to1","L1-tp delta phi v. chi2",100,-0.003,0.003);
-  TH1F* h_allmatchDeltaEta_chi2_0to1   = new TH1F("h_allmatchDeltaEta_chi2_0to1","L1-tp delta eta v. chi2",100,-0.025,0.025);
-  TH1F* h_allmatchDeltaZ0_chi2_0to1    = new TH1F("h_allmatchDeltaZ0_chi2_0to1"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
-  TH1F* h_allmatchDeltaPtOPt_chi2_0to1 = new TH1F("h_allmatchDeltaPtOPt_chi2_0to1" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
+  TH1F* h_bestmatchDeltaPhi_chi2_0to1   = new TH1F("h_bestmatchDeltaPhi_chi2_0to1","L1-tp delta phi v. chi2",100,-0.003,0.003);
+  TH1F* h_bestmatchDeltaEta_chi2_0to1   = new TH1F("h_bestmatchDeltaEta_chi2_0to1","L1-tp delta eta v. chi2",100,-0.025,0.025);
+  TH1F* h_bestmatchDeltaZ0_chi2_0to1    = new TH1F("h_bestmatchDeltaZ0_chi2_0to1"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
+  TH1F* h_bestmatchDeltaPtOPt_chi2_0to1 = new TH1F("h_bestmatchDeltaPtOPt_chi2_0to1" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
 
-  TH1F* h_allmatchDeltaPhi_chi2_1to2   = new TH1F("h_allmatchDeltaPhi_chi2_1to2","L1-tp delta phi v. chi2",100,-0.003,0.003);
-  TH1F* h_allmatchDeltaEta_chi2_1to2   = new TH1F("h_allmatchDeltaEta_chi2_1to2","L1-tp delta eta v. chi2",100,-0.025,0.025);
-  TH1F* h_allmatchDeltaZ0_chi2_1to2    = new TH1F("h_allmatchDeltaZ0_chi2_1to2"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
-  TH1F* h_allmatchDeltaPtOPt_chi2_1to2 = new TH1F("h_allmatchDeltaPtOPt_chi2_1to2" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
+  TH1F* h_bestmatchDeltaPhi_chi2_1to2   = new TH1F("h_bestmatchDeltaPhi_chi2_1to2","L1-tp delta phi v. chi2",100,-0.003,0.003);
+  TH1F* h_bestmatchDeltaEta_chi2_1to2   = new TH1F("h_bestmatchDeltaEta_chi2_1to2","L1-tp delta eta v. chi2",100,-0.025,0.025);
+  TH1F* h_bestmatchDeltaZ0_chi2_1to2    = new TH1F("h_bestmatchDeltaZ0_chi2_1to2"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
+  TH1F* h_bestmatchDeltaPtOPt_chi2_1to2 = new TH1F("h_bestmatchDeltaPtOPt_chi2_1to2" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
 
-  TH1F* h_allmatchDeltaPhi_chi2_2to4   = new TH1F("h_allmatchDeltaPhi_chi2_2to4","L1-tp delta phi v. chi2",100,-0.003,0.003);
-  TH1F* h_allmatchDeltaEta_chi2_2to4   = new TH1F("h_allmatchDeltaEta_chi2_2to4","L1-tp delta eta v. chi2",100,-0.025,0.025);
-  TH1F* h_allmatchDeltaZ0_chi2_2to4    = new TH1F("h_allmatchDeltaZ0_chi2_2to4"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
-  TH1F* h_allmatchDeltaPtOPt_chi2_2to4 = new TH1F("h_allmatchDeltaPtOPt_chi2_2to4" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
+  TH1F* h_bestmatchDeltaPhi_chi2_2to4   = new TH1F("h_bestmatchDeltaPhi_chi2_2to4","L1-tp delta phi v. chi2",100,-0.003,0.003);
+  TH1F* h_bestmatchDeltaEta_chi2_2to4   = new TH1F("h_bestmatchDeltaEta_chi2_2to4","L1-tp delta eta v. chi2",100,-0.025,0.025);
+  TH1F* h_bestmatchDeltaZ0_chi2_2to4    = new TH1F("h_bestmatchDeltaZ0_chi2_2to4"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
+  TH1F* h_bestmatchDeltaPtOPt_chi2_2to4 = new TH1F("h_bestmatchDeltaPtOPt_chi2_2to4" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
 
-  TH1F* h_allmatchDeltaPhi_chi2_gr4   = new TH1F("h_allmatchDeltaPhi_chi2_gr4","L1-tp delta phi v. chi2",100,-0.003,0.003);
-  TH1F* h_allmatchDeltaEta_chi2_gr4   = new TH1F("h_allmatchDeltaEta_chi2_gr4","L1-tp delta eta v. chi2",100,-0.025,0.025);
-  TH1F* h_allmatchDeltaZ0_chi2_gr4    = new TH1F("h_allmatchDeltaZ0_chi2_gr4"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
-  TH1F* h_allmatchDeltaPtOPt_chi2_gr4 = new TH1F("h_allmatchDeltaPtOPt_chi2_gr4" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
+  TH1F* h_bestmatchDeltaPhi_chi2_gr4   = new TH1F("h_bestmatchDeltaPhi_chi2_gr4","L1-tp delta phi v. chi2",100,-0.003,0.003);
+  TH1F* h_bestmatchDeltaEta_chi2_gr4   = new TH1F("h_bestmatchDeltaEta_chi2_gr4","L1-tp delta eta v. chi2",100,-0.025,0.025);
+  TH1F* h_bestmatchDeltaZ0_chi2_gr4    = new TH1F("h_bestmatchDeltaZ0_chi2_gr4"  ,"L1-tp delta Z0 v. chi2"  ,100,-2,2);
+  TH1F* h_bestmatchDeltaPtOPt_chi2_gr4 = new TH1F("h_bestmatchDeltaPtOPt_chi2_gr4" ,"L1-tp (delta Pt)/Pt v. chi2" ,100,-0.1,0.1);
 
   TH2F* h_nMatchTrkVsTpPt      = new TH2F("h_nMatchTrkVsTpPt", "nMatchTrk vs tp Pt",600,0.,150.,10,-0.5,9.5);
   TH2F* h_nMatchTrkVsTpPt_low  = new TH2F("h_nMatchTrkVsTpPt_low", "nMatchTrk vs tp Pt",100,0.,10.,10,-0.5,9.5);
@@ -295,8 +261,8 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
       h_tpVr->Fill(tp_dxy->at(j));
       h_tpType->Fill(tp_pdgid->at(j));
 
-      h_nMatchTrkVsTpPt->Fill(tp_pt->at(j), allmatchtrk_pt->at(j).size());
-      h_nMatchTrkVsTpPt_low->Fill(tp_pt->at(j), allmatchtrk_pt->at(j).size());
+//      h_nMatchTrkVsTpPt->Fill(tp_pt->at(j), allmatchtrk_pt->at(j).size());
+//      h_nMatchTrkVsTpPt_low->Fill(tp_pt->at(j), allmatchtrk_pt->at(j).size());
 
       h_bestmatchDeltaPtOPt->Fill((matchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
       h_bestmatchDeltaPhi->Fill(matchtrk_phi->at(j) - tp_phi->at(j));
@@ -304,42 +270,42 @@ void analyzeCMSSWEvent(TString histFileName="test.root", TString rootFileName="m
       h_bestmatchDeltaZ0->Fill(matchtrk_z0->at(j) - tp_z0->at(j));
 
       // Loop over all trks matched to tp
-      unsigned int nMatchTrk = allmatchtrk_pt->at(j).size();
+      unsigned int nMatchTrk = bestmatchtrk_pt->at(j).size();
       for(unsigned int k=0; k<nMatchTrk; k++) {
 
-        h_allmatchDeltaPtOPt->Fill((allmatchtrk_pt->at(j).at(k) - tp_pt->at(j))/tp_pt->at(j));
-        h_allmatchDeltaPhi->Fill(allmatchtrk_phi->at(j).at(k) - tp_phi->at(j));
-        h_allmatchDeltaEta->Fill(allmatchtrk_eta->at(j).at(k) - tp_eta->at(j));
-        h_allmatchDeltaZ0->Fill(allmatchtrk_z0->at(j).at(k) - tp_z0->at(j));
+        h_bestmatchDeltaPtOPt->Fill((bestmatchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
+        h_bestmatchDeltaPhi->Fill(bestmatchtrk_phi->at(j) - tp_phi->at(j));
+        h_bestmatchDeltaEta->Fill(bestmatchtrk_eta->at(j) - tp_eta->at(j));
+        h_bestmatchDeltaZ0->Fill(bestmatchtrk_z0->at(j) - tp_z0->at(j));
 
-        h_allmatchDeltaPtOPt_chi2->Fill(allmatchtrk_chi2->at(j).at(k),(allmatchtrk_pt->at(j).at(k) - tp_pt->at(j))/tp_pt->at(j));
-        h_allmatchDeltaPhi_chi2->Fill(allmatchtrk_chi2->at(j).at(k),allmatchtrk_phi->at(j).at(k) - tp_phi->at(j));
-        h_allmatchDeltaEta_chi2->Fill(allmatchtrk_chi2->at(j).at(k),allmatchtrk_eta->at(j).at(k) - tp_eta->at(j));
-        h_allmatchDeltaZ0_chi2->Fill(allmatchtrk_chi2->at(j).at(k),allmatchtrk_z0->at(j).at(k) - tp_z0->at(j));
+        h_bestmatchDeltaPtOPt_chi2->Fill(bestmatchtrk_chi2->at(j),(bestmatchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
+        h_bestmatchDeltaPhi_chi2->Fill(bestmatchtrk_chi2->at(j),bestmatchtrk_phi->at(j) - tp_phi->at(j));
+        h_bestmatchDeltaEta_chi2->Fill(bestmatchtrk_chi2->at(j),bestmatchtrk_eta->at(j) - tp_eta->at(j));
+        h_bestmatchDeltaZ0_chi2->Fill(bestmatchtrk_chi2->at(j),bestmatchtrk_z0->at(j) - tp_z0->at(j));
 
-        if(allmatchtrk_chi2->at(j).at(k) > 0 && allmatchtrk_chi2->at(j).at(k) < 1) {
-          h_allmatchDeltaPtOPt_chi2_0to1->Fill((allmatchtrk_pt->at(j).at(k) - tp_pt->at(j))/tp_pt->at(j));
-          h_allmatchDeltaPhi_chi2_0to1->Fill(allmatchtrk_phi->at(j).at(k) - tp_phi->at(j));
-          h_allmatchDeltaEta_chi2_0to1->Fill(allmatchtrk_eta->at(j).at(k) - tp_eta->at(j));
-          h_allmatchDeltaZ0_chi2_0to1->Fill(allmatchtrk_z0->at(j).at(k) - tp_z0->at(j));
+        if(bestmatchtrk_chi2->at(j) > 0 && bestmatchtrk_chi2->at(j) < 1) {
+          h_bestmatchDeltaPtOPt_chi2_0to1->Fill((bestmatchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
+          h_bestmatchDeltaPhi_chi2_0to1->Fill(bestmatchtrk_phi->at(j) - tp_phi->at(j));
+          h_bestmatchDeltaEta_chi2_0to1->Fill(bestmatchtrk_eta->at(j) - tp_eta->at(j));
+          h_bestmatchDeltaZ0_chi2_0to1->Fill(bestmatchtrk_z0->at(j) - tp_z0->at(j));
         }
-        if(allmatchtrk_chi2->at(j).at(k) > 1 && allmatchtrk_chi2->at(j).at(k) < 2) {
-          h_allmatchDeltaPtOPt_chi2_1to2->Fill((allmatchtrk_pt->at(j).at(k) - tp_pt->at(j))/tp_pt->at(j));
-          h_allmatchDeltaPhi_chi2_1to2->Fill(allmatchtrk_phi->at(j).at(k) - tp_phi->at(j));
-          h_allmatchDeltaEta_chi2_1to2->Fill(allmatchtrk_eta->at(j).at(k) - tp_eta->at(j));
-          h_allmatchDeltaZ0_chi2_1to2->Fill(allmatchtrk_z0->at(j).at(k) - tp_z0->at(j));
+        if(bestmatchtrk_chi2->at(j) > 1 && bestmatchtrk_chi2->at(j) < 2) {
+          h_bestmatchDeltaPtOPt_chi2_1to2->Fill((bestmatchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
+          h_bestmatchDeltaPhi_chi2_1to2->Fill(bestmatchtrk_phi->at(j) - tp_phi->at(j));
+          h_bestmatchDeltaEta_chi2_1to2->Fill(bestmatchtrk_eta->at(j) - tp_eta->at(j));
+          h_bestmatchDeltaZ0_chi2_1to2->Fill(bestmatchtrk_z0->at(j) - tp_z0->at(j));
         }
-        if(allmatchtrk_chi2->at(j).at(k) > 2 && allmatchtrk_chi2->at(j).at(k) < 4) {
-          h_allmatchDeltaPtOPt_chi2_2to4->Fill((allmatchtrk_pt->at(j).at(k) - tp_pt->at(j))/tp_pt->at(j));
-          h_allmatchDeltaPhi_chi2_2to4->Fill(allmatchtrk_phi->at(j).at(k) - tp_phi->at(j));
-          h_allmatchDeltaEta_chi2_2to4->Fill(allmatchtrk_eta->at(j).at(k) - tp_eta->at(j));
-          h_allmatchDeltaZ0_chi2_2to4->Fill(allmatchtrk_z0->at(j).at(k) - tp_z0->at(j));
+        if(bestmatchtrk_chi2->at(j) > 2 && bestmatchtrk_chi2->at(j) < 4) {
+          h_bestmatchDeltaPtOPt_chi2_2to4->Fill((bestmatchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
+          h_bestmatchDeltaPhi_chi2_2to4->Fill(bestmatchtrk_phi->at(j) - tp_phi->at(j));
+          h_bestmatchDeltaEta_chi2_2to4->Fill(bestmatchtrk_eta->at(j) - tp_eta->at(j));
+          h_bestmatchDeltaZ0_chi2_2to4->Fill(bestmatchtrk_z0->at(j) - tp_z0->at(j));
         }
-        if(allmatchtrk_chi2->at(j).at(k) > 4) {
-          h_allmatchDeltaPtOPt_chi2_gr4->Fill((allmatchtrk_pt->at(j).at(k) - tp_pt->at(j))/tp_pt->at(j));
-          h_allmatchDeltaPhi_chi2_gr4->Fill(allmatchtrk_phi->at(j).at(k) - tp_phi->at(j));
-          h_allmatchDeltaEta_chi2_gr4->Fill(allmatchtrk_eta->at(j).at(k) - tp_eta->at(j));
-          h_allmatchDeltaZ0_chi2_gr4->Fill(allmatchtrk_z0->at(j).at(k) - tp_z0->at(j));
+        if(bestmatchtrk_chi2->at(j) > 4) {
+          h_bestmatchDeltaPtOPt_chi2_gr4->Fill((bestmatchtrk_pt->at(j) - tp_pt->at(j))/tp_pt->at(j));
+          h_bestmatchDeltaPhi_chi2_gr4->Fill(bestmatchtrk_phi->at(j) - tp_phi->at(j));
+          h_bestmatchDeltaEta_chi2_gr4->Fill(bestmatchtrk_eta->at(j) - tp_eta->at(j));
+          h_bestmatchDeltaZ0_chi2_gr4->Fill(bestmatchtrk_z0->at(j) - tp_z0->at(j));
         }
 
       }
