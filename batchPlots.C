@@ -70,14 +70,20 @@ void feb20Plots(TString rootFile1="ttbar_newtune_ana.root") {
 
 }
 
-void makeChisqComparePlots(TString rootFile1="mu_standalone_Ana.root",TString rootFile2="mu_CMSSW_Ana.root") {
+void makeChisqPlots(TString rootFile1="ana_ttbar_11.root") {
 
-  makeSingleHist(rootFile1, "h_chisq_afterPD", "", "h_chisq_standalone", false);
-  makeSingleHist(rootFile2, "h_chisq", "", "h_chisq_CMSSW", false);
-  makeDoubleHist(rootFile1, rootFile2, "h_chisq_afterPD", "h_chisq", "h_chisq_compare", false);
-  makeSingleHist(rootFile1, "h_chisq_afterPD", "", "h_chisq_standalone_log", true);
-  makeSingleHist(rootFile2, "h_chisq", "", "h_chisq_CMSSW_log", true);
-  makeDoubleHist(rootFile1, rootFile2, "h_chisq_afterPD", "h_chisq", "h_chisq_compare_log", true);
+  makeSingleHist(rootFile1, "h_chisq_beforePD", "", "h_chisq_before", false);
+  makeSingleHist(rootFile1, "h_ichisq_beforePD", "", "h_ichisq_before", false);
+  makeSingleHist(rootFile1, "h_chisq_afterPD", "", "h_chisq_after", false);
+  makeSingleHist(rootFile1, "h_ichisq_afterPD", "", "h_ichisq_after", false);
+  makeDoubleHist(rootFile1, rootFile1, "h_ichisq_beforePD", "h_ichisq_afterPD", "h_ichisq_double");
+  makeDoubleHist(rootFile1, rootFile1, "h_chisq_beforePD", "h_chisq_afterPD", "h_chisq_double");
+  make2DHist(rootFile1, "h_chisq_ichisq", "", "h_ichiVSchi");
+  make2DHist(rootFile1, "h_chisqDiff16", "", "h_ichi16VSDiff");
+  make2DHist(rootFile1, "h_chisqDiff16Zoom", "", "h_ichi16VSDiffZoom");
+  for(int slice=1; slice<13; slice++) {
+    makeXSliceHist(rootFile1, "h_chisqDiff16Zoom", "", slice, slice, "h_ichi16VSDiffZoom_Slice"+to_string(slice));
+  }
 
 }
 
@@ -89,68 +95,21 @@ void makeEtaAsym() {
 
 }
 
-//void makeResPlots(TString rootFile="totalMuFPGAAnalysis.root") {
+void makeResPlots(TString rootFile="ana_myTest.root") {
 
-//    resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","mcEtaLess1","DeltaPhi_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaEta_AllM","mcEtaLess1","DeltaEta_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaR_AllM","mcEtaLess1","DeltaR_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","mcEtaLess1","DeltaPtOPt_allMatch_etaLess1");
-//    resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","mcEta1to1.7","DeltaPhi_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaEta_AllM","mcEta1to1.7","DeltaEta_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaR_AllM","mcEta1to1.7","DeltaR_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","mcEta1to1.7","DeltaPtOPt_allMatch_eta1to1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","mcEtaMore1.7","DeltaPhi_allMatch_etaMore1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaEta_AllM","mcEtaMore1.7","DeltaEta_allMatch_etaMore1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaR_AllM","mcEtaMore1.7","DeltaR_allMatch_etaMore1.7");
-//    resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","mcEtaMore1.7","DeltaPtOPt_allMatch_etaMore1.7");
+//  resolutionPlot(rootFile, "h_matchDeltaPhi_5stub", "", "PhiRes_5stub");
 
-  //resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","barrelOnly","DeltaPhi_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaEta_AllM","barrelOnly","DeltaEta_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaR_AllM","barrelOnly","DeltaR_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","barrelOnly","DeltaPtOPt_allMatch_barrelOnly");
-  //resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","diskOnly","DeltaPhi_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaEta_AllM","diskOnly","DeltaEta_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaR_AllM","diskOnly","DeltaR_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","diskOnly","DeltaPtOPt_allMatch_diskonly");
-  //resolutionPlots(rootFile,"h_matchDeltaPhi_AllM","overlap","DeltaPhi_allMatch_overlap");
-  //resolutionPlots(rootFile,"h_matchDeltaEta_AllM","overlap","DeltaEta_allMatch_overlap");
-  //resolutionPlots(rootFile,"h_matchDeltaR_AllM","overlap","DeltaR_allMatch_overlap");
-  //resolutionPlots(rootFile,"h_matchDeltaPtOPt_AllM","overlap","DeltaPtOPt_allMatch_overlap"); 
-  /*
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","mcEtaLess1","DeltaZ0_nS4_mcEtaLess1");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","mcEtaLess1","DeltaZ0_nS5_mcEtaLess1");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","mcEtaLess1","DeltaZ0_nS6_mcEtaLess1");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","mcEta1to1.7","DeltaZ0_nS4_mcEta1to1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","mcEta1to1.7","DeltaZ0_nS5_mcEta1to1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","mcEta1to1.7","DeltaZ0_nS6_mcEta1to1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","mcEtaMore1.7","DeltaZ0_nS4_mcEtaMore1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","mcEtaMore1.7","DeltaZ0_nS5_mcEtaMore1.7");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","mcEtaMore1.7","DeltaZ0_nS6_mcEtaMore1.7");
-*/
-  /*
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","barrelOnly","DeltaZ0_nS4_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","barrelOnly","DeltaZ0_nS5_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","barrelOnly","DeltaZ0_nS6_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","diskOnly","DeltaZ0_nS4_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","diskOnly","DeltaZ0_nS5_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","diskOnly","DeltaZ0_nS6_diskOnly");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS4","overlap","DeltaZ0_nS4_overlap");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS5","overlap","DeltaZ0_nS5_overlap");
-    resolutionPlots(rootFile,"h_matchDeltaZ0_nS6","overlap","DeltaZ0_nS6_overlap");
-  */
-//    combinationResolution(rootFile,"Phi","tracklet","PhiResVsNStub_trklet");
-//    combinationResolution(rootFile,"Eta","tracklet","EtaResVsNStub_trklet");
-//    combinationResolution(rootFile,"Z0","tracklet","Z0ResVsNStub_trklet");
-//    combinationResolution(rootFile,"PtOPt","tracklet","PtOPtResVsNStub_trklet");
+  combinationResolution(rootFile,"","Phi", "PhiResVsNStub");
+  combinationResolution(rootFile,"","Eta","EtaResVsNStub");
+  combinationResolution(rootFile,"","Z0","Z0ResVsNStub");
+  combinationResolution(rootFile,"","PtOPt","PtOPtResVsNStub");
 //  
 //    //combinationResolution(rootFile,"Phi","eta","PhiResVsNStub_eta");
 //    //combinationResolution(rootFile,"Eta","eta","EtaResVsNStub_eta");
 //    //combinationResolution(rootFile,"Z0","eta","Z0ResVsNStub_eta");
 //    //combinationResolution(rootFile,"PtOPt","eta","PtOPtResVsNStub_eta");
 
-
-
-//}
+}
 
 void makeDoubleResPlots(TString rootFile1="plusMu10FPGAAnalysis.root", TString rootFile2="minusMu10FPGAAnalysis.root") {
 
@@ -187,18 +146,6 @@ void makeEffPlots(TString rootFile="totalMuFPGAAnalysis.root") {
 
 void makeMultiplicityPlots(TString rootFile="mu10Analysis.root") {
 
-  makeBarrelStubHist(rootFile,"");
-  makeBarrelStubHist(rootFile,"_ghost");
-  makeDiskStubHist(rootFile,"F","");
-  makeDiskStubHist(rootFile,"F","_ghost");
-  makeDiskStubHist(rootFile,"B","");
-  makeDiskStubHist(rootFile,"B","_ghost");
-  makeBarrelTrackHist(rootFile,"");
-  makeBarrelTrackHist(rootFile,"_ghost");
-  makeDiskTrackHist(rootFile,"F","");
-  makeDiskTrackHist(rootFile,"F","_ghost");
-  makeDiskTrackHist(rootFile,"B","");
-  makeDiskTrackHist(rootFile,"B","_ghost");
   makeSingleHist(rootFile,"h_iLTkt_tot");
   makeSingleHist(rootFile,"h_iLTktWODup_tot");
   makeSingleHist(rootFile,"h_iLTkt_ghost");
@@ -358,7 +305,7 @@ void DoubleDecemberPlots() {
 }
 
 void StandardMuPlots() {
-  makeDoubleHist("ana_MuMinus_ichi_adj.root","ana_MuMinus_ichi_adj.root","h_nTrkEvt_tot","h_nTrkEvtWODup_tot","Mu10 PD Performance",true,true);
+  makeDoubleHist("ana_Mu_10000.root","ana_Mu_10000.root","h_nTrkEvt_tot","h_nTrkEvtWODup_tot","Mu50 PD Performance",true,true);
   makeSingleHist("ana_MuMinus_ichi_adj.root","h_nDupTrk_tot","","nDupTrack");
   makeSingleHist("ana_MuMinus_ichi_adj.root","h_nMCTrkEvt_tot","","nMCTrk");
   makeDoubleHist("ana_MuMinus_ichi_adj.root","ana_MuMinus_ichi_adj.root","h_ichisq_beforePD","h_ichisq_afterPD","iChisquare Before&After",false,true);

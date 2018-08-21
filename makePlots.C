@@ -387,6 +387,55 @@ void make2DHist(TString rootFileName="totalMuFPGAAnalysis.root", TString hname="
 
 }
 
+void makeXSliceHist(TString rootFileName="", TString hname="", TString dirName="", int firstbin=0, int lastbin=1, TString outputname="") {
+
+    // Load File and prep for loading hists/saving
+    TFile *rootFile = new TFile(rootFileName);
+    TDirectory *d = (TDirectory*)rootFile->GetDirectory(dirName);
+    TString outputdir = "Plots/";
+
+
+    TCanvas* c = new TCanvas(hname);
+        c->SetGrid();
+
+    // Get histogram
+    TH2F* h1 = (TH2F*)d->Get(hname);
+
+    // New histogram
+    TH1D* h2 = h1->ProjectionX(outputname,firstbin,lastbin);
+        h2->SetLineColor(kBlack);
+        h2->SetLineWidth(3);
+
+    // Setup the pad
+    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
+        p1->SetGrid();
+        p1->Draw();
+        p1->cd();
+
+    // Draw histogram
+    THStack* hs = new THStack("hs",hname);
+        hs->SetTitle(hname);
+        hs->Add(h2,"s");
+        hs->Draw("nostack");
+
+    // Make stat box
+    p1->Update();
+    TPaveStats* st1 = (TPaveStats*)h2->FindObject("stats");
+        st1->SetOptStat(110111);
+        st1->SetX1NDC(0.8);
+        st1->SetX2NDC(0.99);
+        st1->SetY1NDC(0.8);
+        st1->SetY2NDC(1.0);
+        st1->SetTextColor(h2->GetLineColor());
+
+    p1->Update();
+
+    // Save and close
+    c->Print(outputdir+outputname+".png","png");
+    c->Close();
+    
+}
+
 void makeTripleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString rootFileName2="totalMuFPGAAnalysis.root", TString rootFileName3="totalMuFPGAAnalysis.root", TString hname1="h_nTrkSec_tot", TString hname2="h_nTrkSecWODup_tot", TString hname3="h_nTrkSecMC_tot", TString dirName="", TString outputname="") {
 
     // Load File and prep for loading hists/saving
@@ -474,333 +523,15 @@ void makeTripleHist(TString rootFileName1="totalMuFPGAAnalysis.root", TString ro
 
 }
 
-void makeBarrelStubHist(TString rootFileName="mu10Analysis.root", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("BarrelStubs");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_L1Multi"+ghost);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_L2Multi"+ghost);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_L3Multi"+ghost);
-        h3->SetLineColor(kYellow+1);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    TH1F* h4 = (TH1F*)d->Get("h_L4Multi"+ghost);
-        h4->SetLineColor(kBlue+1);
-        h4->SetLineWidth(3);
-        h4->SetLineStyle(2);
-        h4->Scale(1/h4->GetEntries());
-        h4->SetStats(0);
-
-    TH1F* h5 = (TH1F*)d->Get("h_L5Multi"+ghost);
-        h5->SetLineColor(kMagenta+2);
-        h5->SetLineWidth(3);
-        h5->SetLineStyle(2);
-        h5->Scale(1/h5->GetEntries());
-        h5->SetStats(0);
-
-    TH1F* h6 = (TH1F*)d->Get("h_L6Multi"+ghost);
-        h6->SetLineColor(kOrange+7);
-        h6->SetLineWidth(3);
-        h6->SetLineStyle(2);
-        h6->Scale(1/h6->GetEntries());
-        h6->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Barrel Stub Multiplicity");
-        hs->SetTitle("Barrel Stub Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Add(h4,"s");
-        hs->Add(h5,"s");
-        hs->Add(h6,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, "L1", "lp");
-    leg->AddEntry(h2, "L2", "lp");
-    leg->AddEntry(h3, "L3", "lp");
-    leg->AddEntry(h4, "L4", "lp");
-    leg->AddEntry(h5, "L5", "lp");
-    leg->AddEntry(h6, "L6", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+"BarrelStubMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void makeDiskStubHist(TString rootFileName="mu10Analysis.root", TString half="F", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("BackwardDiskStubs");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_"+half+"1Multi"+ghost);
-    h1->SetLineColorAlpha(kBlack,0.2);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_"+half+"2Multi"+ghost);
-    h2->SetLineColorAlpha(kRed,0.2);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_"+half+"3Multi"+ghost);
-    h3->SetLineColorAlpha(kYellow+1,0.2);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    TH1F* h4 = (TH1F*)d->Get("h_"+half+"4Multi"+ghost);
-    h4->SetLineColorAlpha(kBlue+1,0.2);
-        h4->SetLineWidth(3);
-        h4->SetLineStyle(2);
-        h4->Scale(1/h4->GetEntries());
-        h4->SetStats(0);
-
-    TH1F* h5 = (TH1F*)d->Get("h_"+half+"5Multi"+ghost);
-    h5->SetLineColorAlpha(kMagenta+2,0.2);
-        h5->SetLineWidth(3);
-        h5->SetLineStyle(2);
-        h5->Scale(1/h5->GetEntries());
-        h5->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Disk Stub Multiplicity");
-        hs->SetTitle(half+" Disk Stub Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Add(h4,"s");
-        hs->Add(h5,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, half+"1", "lp");
-    leg->AddEntry(h2, half+"2", "lp");
-    leg->AddEntry(h3, half+"3", "lp");
-    leg->AddEntry(h4, half+"4", "lp");
-    leg->AddEntry(h5, half+"5", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+half+"DiskStubMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void makeBarrelTrackHist(TString rootFileName="mu10Analysis.root", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("BarrelTracks");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_L1L2Multi"+ghost);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_L3L4Multi"+ghost);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_L5L6Multi"+ghost);
-        h3->SetLineColor(kYellow+1);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Barrel Track Multiplicity");
-        hs->SetTitle("Barrel Track Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, "L1L2", "lp");
-    leg->AddEntry(h2, "L3L4", "lp");
-    leg->AddEntry(h3, "L5L6", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+"BarrelTrackMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-void makeDiskTrackHist(TString rootFileName="mu10Analysis.root", TString half="F", TString ghost="") {
-
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/";
-    TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
-
-    TCanvas* c = new TCanvas("DiskTracks");
-
-    // Get histograms
-    TH1F* h1 = (TH1F*)d->Get("h_"+half+"1"+half+"2"+"Multi"+ghost);
-        h1->SetLineColor(kBlack);
-        h1->SetLineWidth(3);
-        h1->SetLineStyle(2);
-        h1->Scale(1/h1->GetEntries());
-        h1->SetStats(0);
-
-    TH1F* h2 = (TH1F*)d->Get("h_"+half+"3"+half+"4"+"Multi"+ghost);
-        h2->SetLineColor(kRed);
-        h2->SetLineWidth(3);
-        h2->SetLineStyle(2);
-        h2->Scale(1/h2->GetEntries());
-        h2->SetStats(0);
-
-    TH1F* h3 = (TH1F*)d->Get("h_"+half+"1L"+"Multi"+ghost);
-        h3->SetLineColor(kYellow+1);
-        h3->SetLineWidth(3);
-        h3->SetLineStyle(2);
-        h3->Scale(1/h3->GetEntries());
-        h3->SetStats(0);
-
-    // Setup the superimposed histograms pad
-    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
-        p1->SetGrid();
-        p1->SetLogy();
-        p1->Draw();
-        p1->cd();
-
-    // Draw histograms
-    THStack* hs = new THStack("hs","Disk Track Multiplicity");
-        hs->SetTitle("Disk Track Multiplicity");
-        hs->SetMinimum(0.000125);
-        hs->Add(h1,"s");
-        hs->Add(h2,"s");
-        hs->Add(h3,"s");
-        hs->Draw("nostack");
-
-    // Make legend
-    p1->Update();
-
-    TLegend* leg = new TLegend(0.80,0.55,0.9,0.9);
-    //leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->AddEntry(h1, half+"1"+half+"2", "lp");
-    leg->AddEntry(h2, half+"3"+half+"4", "lp");
-    leg->AddEntry(h3, half+"1L", "lp");
-    leg->Draw();
-
-    p1->Update();
-
-    // Save and close
-    c->Print(outputdir+half+"DiskTrackMultiplicity"+ghost+".png","png");
-    c->Close();
-
-}
-
-
-void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1name="h_matchDeltaPhi_AllM", TString outputname="") {
+void resolutionPlot(TString rootFileName="totalMuFPGAAnalysis.root", TString h1name="h_matchDeltaPhi_AllM", TString dirName="", TString outputname="") {
 
     // Load File and prep for loading hists/saving
     TFile *rootFile = new TFile(rootFileName);
     TString outputdir = "Plots/Resolution/";
     TDirectory *d;
-    d = (TDirectory*)rootFile->GetDirectory("");
+    d = (TDirectory*)rootFile->GetDirectory(dirName);
 
-	TCanvas* c = new TCanvas(h1name);
+	  TCanvas* c = new TCanvas(h1name);
         c->SetGrid();
 
     // Get histogram and draw the fit curve on top
@@ -907,95 +638,91 @@ void doubleResPlots(TString rootFileName1="plusMu10FPGAAnalysis.root", TString r
     c->Close();
 }
 
-void combinationResolution(TString rootFileName="totalMuFPGAAnalysis.root", TString variable="Phi", TString regionType="tracklet", TString outputname="plotName") {
+void combinationResolution(TString rootFileName="totalMuFPGAAnalysis.root", TString dirName="", TString variable="Phi", TString outputname="") {
 
-    // Load File and prep for loading hists/saving
-    TFile *rootFile = new TFile(rootFileName);
-    rootFileName.ReplaceAll("Analysis.root","");
-    TString outputdir = "Plots/" + rootFileName + "/Resolution/";
-    TDirectory *d;
+  // Load File and prep for loading hists/saving
+  TFile *rootFile = new TFile(rootFileName);
+  TString outputdir = "Plots/Resolution/";
+  TDirectory *d;
 
-    // Create objects to fill
-    TCanvas* c = new TCanvas();
-    c->SetGrid();
+  // Create objects to fill
+  TCanvas* c = new TCanvas();
+  c->SetGrid();
 
-    TMultiGraph* mg = new TMultiGraph;
-    mg->Draw("apl");
+  TMultiGraph* mg = new TMultiGraph;
+  mg->Draw("apl");
 
-    TGraphErrors* g[4];
+  TGraphErrors* g[4];
 
-    TLegend* leg = new TLegend(0.525,0.75,0.9,0.9);
-    leg->SetMargin(0.035);
-    leg->SetTextSize(0.035);
-    leg->Draw();
+  TLegend* leg = new TLegend(0.525,0.75,0.9,0.9);
+  leg->SetMargin(0.035);
+  leg->SetTextSize(0.035);
+  leg->Draw();
 
-    TH1F* htot[3];
+  TH1F* htot[3];
 
-    // Get the resolution for each region and plot, separated by nStub
-    for(int r=0; r<3; r++) {
-        TString region;
-        if(regionType=="tracklet") {
-            if(r==0) region = "barrelOnly";
-            if(r==1) region = "diskOnly";
-            if(r==2) region = "overlap";
-        }
-        if(regionType=="eta") {
-            if(r==0) region = "mcEtaLess1";
-            if(r==1) region = "mcEta1to1.7";
-            if(r==2) region = "mcEtaMore1.7";
-        }
-        d = (TDirectory*)rootFile->GetDirectory(region);
-        g[r] = new TGraphErrors();
-        g[r]->SetMarkerStyle(8);
-        g[r]->SetMarkerColor(r+2);
-        g[r]->SetLineColor(r+2);
-        g[r]->SetMarkerSize(1.25);
+  // Get the resolution for each region and plot, separated by nStub
+  for(int r=0; r<3; r++) {
 
-        for(int nStub=4; nStub<=6; nStub++) {
-            TString hname = Form("h_matchDelta"+variable+"_nS%i",nStub);
-            TH1F* h = (TH1F*)d->Get(hname);
-            if(h->GetEntries()==0) continue;
+    TString region;
+    if(r==0) region = "barrelOnly";
+    if(r==1) region = "diskOnly";
+    if(r==2) region = "overlap";
 
-            // Sum over regions to make total hists
-            if(r==0) htot[nStub-4]=h;
-            else htot[nStub-4]->Add(h,1);
+    d = (TDirectory*)rootFile->GetDirectory(region);
+    g[r] = new TGraphErrors();
+    g[r]->SetMarkerStyle(8);
+    g[r]->SetMarkerColor(r+2);
+    g[r]->SetLineColor(r+2);
+    g[r]->SetMarkerSize(1.25);
 
-            // Get resolution points except for 4 stub overlap (bad statistics)
-            if(regionType!="tracklet" || nStub!=4 || r!=2) {
-              cout << "test1" << endl;
-                h->Fit("gaus","Q0");
-                cout << "test2" << endl;
-                TF1* gaus = h->GetFunction("gaus");
-                g[r]->SetPoint(g[r]->GetN(),nStub,gaus->GetParameter(2));
-                g[r]->SetPointError(g[r]->GetN()-1,0,gaus->GetParError(2));
-            }
-        }
-        // Plot all regional resolution graphs
-        mg->Add(g[r]);
-        leg->AddEntry(g[r],variable+" resolution, "+region+" tracks","p");
-    }
-
-    // Plot total hist resolutions
-    g[3] = new TGraphErrors();
     for(int nStub=4; nStub<=6; nStub++) {
-        htot[nStub-4]->Fit("gaus","Q0");
-        TF1* gaus = htot[nStub-4]->GetFunction("gaus");
-        g[3]->SetPoint(g[3]->GetN(),nStub,gaus->GetParameter(2));
-        g[3]->SetPointError(g[3]->GetN()-1,0,gaus->GetParError(2));
+      TString hname = Form("h_matchDelta"+variable+"_%istub",nStub);
+      TH1F* h = (TH1F*)d->Get(hname);
+      if(h->GetEntries()==0) continue;
+
+      // Sum over regions to make total hists
+      if(r==0) htot[nStub-4]=h;
+      else htot[nStub-4]->Add(h,1);
+
+      // Get resolution points except for 4 stub overlap (bad statistics)
+//      if(nStub!=4 || r==0) {
+        h->Fit("gaus","Q0");
+        TF1* gaus = h->GetFunction("gaus");
+        g[r]->SetPoint(g[r]->GetN(),nStub,gaus->GetParameter(2));
+        g[r]->SetPointError(g[r]->GetN()-1,0,gaus->GetParError(2));
+//      }
     }
-    g[3]->SetMarkerStyle(8);
-    g[3]->SetMarkerColor(1);
-    g[3]->SetLineColor(1);
-    g[3]->SetMarkerSize(1.25);
-    mg->Add(g[3]);
-    leg->AddEntry(g[3],variable+" resolution, all tracks","p");        
+    // Plot all regional resolution graphs
+    mg->Add(g[r]);
+    leg->AddEntry(g[r],variable+" resolution, "+region+" tracks","p");
+  }
 
-    mg->GetXaxis()->SetTitle("Number of Stubs");
+  // Plot total hist resolutions
+  g[3] = new TGraphErrors();
+  for(int nStub=4; nStub<=6; nStub++) {
+    htot[nStub-4]->Fit("gaus","Q0");
+    TF1* gaus = htot[nStub-4]->GetFunction("gaus");
+    g[3]->SetPoint(g[3]->GetN(),nStub,gaus->GetParameter(2));
+    g[3]->SetPointError(g[3]->GetN()-1,0,gaus->GetParError(2));
+  }
+  g[3]->SetMarkerStyle(8);
+  g[3]->SetMarkerColor(1);
+  g[3]->SetLineColor(1);
+  g[3]->SetMarkerSize(1.25);
+  mg->Add(g[3]);
+  leg->AddEntry(g[3],variable+" resolution, all tracks","p");        
 
-    // Save and close
-    c->Update();
-    c->Print(outputdir+outputname+".png","png");
-    c->Close();
+  mg->GetXaxis()->SetTitle("Number of Stubs");
+  if(variable=="Z0") {
+    mg->SetMinimum(0.01);
+    c->SetLogy();
+  }
+
+  // Save and close
+  c->Update();
+  c->Print(outputdir+outputname+".png","png");
+  c->Close();
 
 }
 
