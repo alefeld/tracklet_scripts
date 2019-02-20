@@ -33,17 +33,41 @@ void makeSingleHist(TString rootFileName="mu10Analysis.root", TString hname="h_i
         h1->SetLineColor(kBlack);
         h1->SetLineWidth(3);
 
+
+
+
     // Setup the pad
     TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
         p1->SetGrid();
         p1->Draw();
         p1->cd();
 
+    // plot 95th percentile
+    const Int_t nq = 100;
+    const Int_t nshots = 10;
+    Double_t xq[nq];
+    Double_t yq[nq];
+    for (Int_t i=0; i<nq; i++) xq[i] = Float_t(i+1)/nq;
+
+    h1->GetQuantiles(nq,yq,xq);
+
     // Draw histogram
     THStack* hs = new THStack("hs",hname);
         hs->SetTitle(hname);
         hs->Add(h1,"s");
         hs->Draw("nostack");
+
+//    TLine* line1 = new TLine(yq[94],0.001,yq[94],100000);
+//    line1->SetLineColor(2);
+//    line1->SetLineWidth(2);
+//    line1->Draw("same");
+
+//    TLine* line2 = new TLine(yq[98],0.001,yq[98],100000);
+//    line2->SetLineColor(3);
+//    line2->SetLineWidth(2);
+//    line2->Draw("same");
+
+    //gr95->Draw("AL");
 
     // Make stat box
     p1->Update();
@@ -933,7 +957,7 @@ void makeTDRPlot(TString rootFileName1="Mu10_ss_ana.root", TString rootFileName2
         hs->Add(h1,"");
         hs->Add(h2,"");
         hs->Add(h3,"");
-        hs->Draw("nostack");
+        hs->Draw("nostack HIST");
         p1->SetPad(0,0.025,1,1);
         hs->GetXaxis()->Set(10,0.5,10.5);
         c->Update();
@@ -944,7 +968,7 @@ void makeTDRPlot(TString rootFileName1="Mu10_ss_ana.root", TString rootFileName2
     leg->SetMargin(0.13);
     leg->SetTextSize(0.035);
     leg->SetFillColor(0);
-    leg->Draw();
+    leg->Draw("");
     leg->AddEntry(h1,"Before duplicate removal","l");
     leg->AddEntry(h2,"Duplicate removal within sectors","l");
     leg->AddEntry(h3,"+ Duplicate removal between sectors","l");
@@ -968,6 +992,77 @@ void makeTDRPlot(TString rootFileName1="Mu10_ss_ana.root", TString rootFileName2
     // Save and close
     c->Print(outputdir+outputname+".pdf","pdf");
 //    c->Close();
+
+}
+
+void makeHourglassPlot(TString rootFileName="ana_mu_merge.root", TString hname1="h_nTrkEvt_tot", TString hname2="h_nTrkEvtWODup_tot", TString outputname="DuplicateRemovalHourglassComparison2-10GeVMuons") {
+
+    // Load File and prep for loading hists/saving
+    TFile *rootFile = new TFile(rootFileName);
+    TString outputdir = "Plots/";
+    TDirectory *d;
+    d = (TDirectory*)rootFile->GetDirectory("");
+
+    TCanvas* c = new TCanvas("c_"+hname1);
+
+    // Get histograms
+    TH1F* h1 = (TH1F*)d->Get(hname1);
+        h1->SetLineColor(kBlack);
+        h1->SetLineWidth(3);
+        h1->Scale(1/(h1->Integral()));
+
+    TH1F* h2 = (TH1F*)d->Get(hname2);
+        h2->SetLineColor(kRed);
+        h2->SetLineWidth(3);
+        h2->Scale(1/(h2->Integral()));
+
+
+    // Setup the superimposed histograms pad
+    TPad *p1 = new TPad("p1","p1",0,0.0,1,1.0);
+        p1->SetGrid();
+        p1->Draw();
+        p1->cd();
+
+    // Draw histograms  
+    THStack* hs = new THStack("hs","");
+        hs->SetMinimum(0);
+        hs->Add(h1,"");
+        hs->Add(h2,"");
+        hs->Draw("nostack HIST");
+        p1->SetPad(0,0.025,1,1);
+        hs->GetXaxis()->Set(10,0.5,10.5);
+        c->Update();
+
+
+    // Change Style
+    TLegend* leg = new TLegend(0.475,0.7,0.9,0.9,"Single muons 2<P_{T}<10GeV");
+    leg->SetMargin(0.13);
+    leg->SetTextSize(0.035);
+    leg->SetFillColor(0);
+    leg->Draw();
+    leg->AddEntry(h1,"Before duplicate removal","l");
+    leg->AddEntry(h2,"After duplicate removal","l");
+    hs->SetMinimum(0.001); //LOG SETTINGS
+    p1->SetLogy(); // LOG SETTINGS
+    p1->Update();
+
+    // Add Labels
+//    TLatex* title = new TLatex(2.5,1.05,"CMS Preliminary Simulation, Phase-2"); //LINEAR SETTINGS
+    TLatex* title = new TLatex(3.0,1.9,"CMS Preliminary Simulation, Phase-2"); //LOG SETTINGS
+    title->SetTextSize(0.035);
+    title->Draw();
+//    TLatex* xaxis = new TLatex(2.5,-0.1,"Number of tracks (#geq1) per event"); //LINEAR SETTINGS
+    TLatex* xaxis = new TLatex(2.5,0.0005,"Number of tracks (#geq1) per event"); //LOG SETTINGS
+    xaxis->Draw();
+    TLatex* yaxis = new TLatex(-0.12,0.03,"Fraction of events"); //LOG SETTINGS
+    yaxis->SetTextAngle(90);
+    yaxis->Draw();
+    p1->Update();
+
+    // Save and close
+    c->Print(outputdir+outputname+".pdf","pdf");
+    c->Print(outputdir+outputname+".png","png");
+    c->Close();
 
 }
 

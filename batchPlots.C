@@ -305,10 +305,10 @@ void DoubleDecemberPlots() {
 }
 
 void StandardMuPlots() {
-  makeDoubleHist("ana_Mu_10000.root","ana_Mu_10000.root","h_nTrkEvt_tot","h_nTrkEvtWODup_tot","Mu50 PD Performance",true,true);
-  makeSingleHist("ana_MuMinus_ichi_adj.root","h_nDupTrk_tot","","nDupTrack");
-  makeSingleHist("ana_MuMinus_ichi_adj.root","h_nMCTrkEvt_tot","","nMCTrk");
-  makeDoubleHist("ana_MuMinus_ichi_adj.root","ana_MuMinus_ichi_adj.root","h_ichisq_beforePD","h_ichisq_afterPD","iChisquare Before&After",false,true);
+  makeTDRPlot("ana_mu_standard_nstub_ss.root","ana_mu_standard_nstub_ss.root","ana_mu_standard_nstub_adj.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_Standard");
+  makeHourglassPlot("ana_mu_hourglass_ichi.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_Hourglass");
+  //makeDoubleHist("ana_mu_standard_adj.root","ana_mu_hourglass.root","h_nDupTrk_tot","h_nDupTrk_tot","nDupTrack");
+  makeSingleHist("ana_mu_standard_nstub_adj.root","h_nMCTrkEvt_tot","","nMCTrk");
 }
 
 void StandardMuPlotsMCpt() {
@@ -334,4 +334,33 @@ void GridPlots() {
   make2DHist("ana_ttbar_grid_adj.root","h_gridMapBigWODup","","ttbar_gridMapBigWODup");
   make2DHist("ana_ttbar_grid_adj.root","h_gridMapGlobal_manyTracks_0","","ttbar_gridMapGlobal");
   make2DHist("ana_ttbar_grid_adj.root","h_gridMapGlobalWODup_manyTracks_0","","ttbar_gridMapGlobalWODup");
+}
+
+void LatencyPlots(TString file1 = "ana_ttbar_standard_ss.root", TString file2 = "ana_ttbar_hourglass.root") {
+  makeSingleHist(file1,"h_nTrkSec2_tot","","nTrkSec_ttbar_Standard");
+  makeSingleHist(file1,"h_secLatency","","Sec_Latency_Standard");
+  makeSingleHist(file1,"h_secComparisons","","Sec_Comparisons_Standard");
+  makeSingleHist(file1,"h_secComparisons_evt1","","Sec_ComparisonEvt1_Standard");
+  makeSingleHist(file2,"h_nTrkSec2_tot","","nTrkSec_ttbar_Hourglass");
+  makeSingleHist(file2,"h_secLatency","","Sec_Latency_Hourglass");
+  makeSingleHist(file2,"h_secComparisons","","Sec_Comparisons_Hourglass");
+  makeSingleHist(file2,"h_secComparisons_evt1","","Sec_ComparisonEvt1_Hourglass");
+
+  makeSingleHist(file1,"h_nTrkBin_tot","","nTrkBin_ttbar_Standard",true);
+  makeSingleHist(file1,"h_binLatency","","Bin_Latency_Standard",true);
+  makeSingleHist(file1,"h_binComparisons","","Bin_Comparisons_Standard",true);
+  makeSingleHist(file1,"h_binComparisons_evt1","","Bin_ComparisonEvt1_Standard",true);
+  makeSingleHist(file2,"h_nTrkBin_tot","","nTrkBin_ttbar_Hourglass",true);
+  makeSingleHist(file2,"h_binLatency","","Bin_Latency_Hourglass",true);
+  makeSingleHist(file2,"h_binComparisons","","Bin_Comparisons_Hourglass",true);
+  makeSingleHist(file2,"h_binComparisons_evt1","","Bin_ComparisonEvt1_Hourglass",true);
+}
+
+void MuRegionPlots() {
+  makeTDRPlot("ana_mu_barrel_standard_ss.root","ana_mu_barrel_standard_ss.root","ana_mu_barrel_standard_adj.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_barrel_Standard");
+  makeTDRPlot("ana_mu_barrel_hourglass.root","ana_mu_barrel_hourglass.root","ana_mu_barrel_hourglass.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_barrel_Hourglass");
+  makeTDRPlot("ana_mu_disk_standard_ss.root","ana_mu_disk_standard_ss.root","ana_mu_disk_standard_adj.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_disk_Standard");
+  makeTDRPlot("ana_mu_disk_hourglass.root","ana_mu_disk_hourglass.root","ana_mu_disk_hourglass.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_disk_Hourglass");
+  makeTDRPlot("ana_mu_overlap_standard_ss.root","ana_mu_overlap_standard_ss.root","ana_mu_overlap_standard_adj.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_overlap_Standard");
+  makeTDRPlot("ana_mu_overlap_hourglass.root","ana_mu_overlap_hourglass.root","ana_mu_overlap_hourglass.root", "h_nTrkEvt_tot", "h_nTrkEvtWODup_tot", "h_nTrkEvtWODup_tot", "MuonPerformance_overlap_Hourglass");
 }
